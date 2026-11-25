@@ -101,6 +101,25 @@ nav.tabs button.on{color:var(--teal)}
 .stat span{font-size:.75rem;color:var(--muted)}
 .fade{animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ---- FX: leichte Belohnungs-Animationen (nur transform/opacity) ---- */
+@property --p{syntax:'<number>';inherits:true;initial-value:0}
+@keyframes fxPop{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}
+@keyframes fxShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+@keyframes fxUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fxFloat{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
+@keyframes fxBump{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+@keyframes fxRing{from{--p:0}}
+.fx-pop{animation:fxPop .35s ease}
+.fx-shake{animation:fxShake .4s ease}
+.fx-float{position:fixed;left:50%;top:0;z-index:50;pointer-events:none;font-weight:800;font-size:22px;color:#15803d;background:#fff;padding:4px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12);white-space:nowrap;animation:fxFloat 1.05s ease-out forwards}
+.fx-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:#fff1e6;color:#c2410c;font-weight:700;font-size:13px;vertical-align:middle}
+.fx-pill.bump{animation:fxBump .45s ease}
+.fx-conf{position:fixed;top:0;left:0;width:8px;height:13px;border-radius:2px;pointer-events:none;z-index:60;will-change:transform,opacity}
+.fx-in{animation:fxUp .28s ease both}
+button{transition:transform .12s ease}
+button:active:not(:disabled){transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.explain{animation:fxUp .3s ease both}
 </style>
 </head>
 <body>
@@ -108,6 +127,34 @@ nav.tabs button.on{color:var(--teal)}
 <nav class="tabs"><div class="in" id="tabs"></div></nav>
 
 <script>
+// ---------- FX: kleine Belohnungen fürs Gehirn (leicht, ohne Bibliothek)
+const FX=(()=>{
+ const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const LOB=["Super!","Stark!","Genau!","Klasse!","Weiter so!","Richtig gut!","Yes! 💪"];
+ const re=(el,c)=>{if(!el||calm)return;el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};
+ const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+ function float(txt,el){if(calm)return;const r=el?el.getBoundingClientRect():{top:innerHeight/2};const d=document.createElement("div");d.className="fx-float";d.textContent=txt;d.style.top=Math.max(24,r.top-12)+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+ let streak=0;
+ // Lerntage in Folge (gemeinsam für alle Seiten)
+ const DK="zfaLF_tage",today=()=>new Date().toISOString().slice(0,10);
+ const getD=()=>{try{return JSON.parse(localStorage.getItem(DK))||{n:0,last:""}}catch(e){return{n:0,last:""}}};
+ function day(){const d=getD(),t=today();if(d.last===t)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);d.n=d.last===y?d.n+1:1;d.last=t;try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){}}
+ function dayPill(){const d=getD(),y=new Date(Date.now()-864e5).toISOString().slice(0,10);const n=(d.last===today()||d.last===y)?d.n:0;return n?`<span class="fx-pill" title="Lerntage in Folge">🔥 ${n} ${n===1?"Tag":"Tage"} in Folge</span>`:`<span class="fx-pill">🔥 Heute starten!</span>`}
+ return{
+  ok(el){streak++;day();re(el,"fx-pop");float(streak>=3?"🔥 "+streak+" in Folge!":LOB[Math.random()*LOB.length|0],el);buzz(12)},
+  bad(el){streak=0;day();re(el,"fx-shake");buzz([25,40,25])},
+  part(){streak=0;day()},
+  reset(){streak=0},
+  get streak(){return streak},
+  pill(){return streak>=2?`<span class="fx-pill bump">🔥 ${streak}</span>`:""},
+  dayPill,
+  confetti(n){if(calm||!document.body.animate)return;const cs=["#0f766e","#f59e0b","#e2614b","#6d28d9","#22c55e","#3b82f6"],x=innerWidth/2,y=innerHeight*.3;
+   for(let i=0;i<n;i++){const d=document.createElement("i");d.className="fx-conf";d.style.background=cs[i%cs.length];document.body.appendChild(d);
+    const a=Math.random()*Math.PI*2,v=90+Math.random()*200,dx=Math.cos(a)*v,dy=Math.sin(a)*v*.6-170,r=Math.random()*900-450;
+    d.animate([{transform:`translate(${x}px,${y}px) rotate(0deg)`,opacity:1},{transform:`translate(${x+dx*.7}px,${y+dy}px) rotate(${r*.5}deg)`,opacity:1,offset:.35},{transform:`translate(${x+dx}px,${y+dy+innerHeight*.6}px) rotate(${r}deg)`,opacity:0}],{duration:1300+Math.random()*700,easing:"cubic-bezier(.25,.6,.45,1)"}).onfinish=()=>d.remove()}},
+  count(el,to,suf){if(!el)return;if(calm){el.textContent=to+suf;return}const t0=performance.now(),D=900;const st=t=>{const k=Math.min(1,(t-t0)/D);el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)},
+  bar(el,from,to){if(!el||calm)return;el.style.width=from+"%";requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=to+"%"}))}
+ }})();
 /* ============ INHALT ============ */
 const TOPICS = [
 {
@@ -498,7 +545,7 @@ function viewLernen(){
  const known=Object.values(S.known).filter(Boolean).length;
  const allCards=TOPICS.reduce((s,t)=>s+t.cards.length,0);
  app.innerHTML=`<div class="fade">
- <header class="top"><div><span class="pill">ZFA · Wirtschaft</span><h1 style="margin-top:8px">Hey Lina! 👋</h1><div class="sub">Alle Prüfungsthemen, Schritt für Schritt.</div></div></header>
+ <header class="top"><div><span class="pill">ZFA · Wirtschaft</span><h1 style="margin-top:8px">Hey Lina! 👋</h1><div class="sub">Alle Prüfungsthemen, Schritt für Schritt.</div><div style="margin-top:6px">${FX.dayPill()}</div></div></header>
  <div class="stats">
   <div class="stat"><b>${total}%</b><span>Fortschritt</span></div>
   <div class="stat"><b>${known}/${allCards}</b><span>Karten gewusst</span></div>
@@ -506,6 +553,7 @@ function viewLernen(){
  </div>
  <a href="patienten.html" class="card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;border-color:var(--teal)"><span class="ico" style="width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;background:var(--teal-soft)">🤝</span><span style="flex:1"><b>Patienten betreuen</b><br><span class="muted" style="font-size:.9rem">LF 2 + 3: Empfang, Anamnese, Recht, Hygiene · 41 Fragen</span></span><span class="arrow">›</span></a>
  <a href="kariestherapie.html" class="card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;border-color:var(--teal)"><span class="ico" style="width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;background:var(--teal-soft)">🦷</span><span style="flex:1"><b>Karies- & Füllungstherapie</b><br><span class="muted" style="font-size:.9rem">LF 4 + 5: Karies, Füllung, Anästhesie, Endo · 53 Fragen</span></span><span class="arrow">›</span></a>
+ <a href="pruefung.html" class="card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;border-color:var(--teal)"><span class="ico" style="width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;background:var(--teal-soft)">📝</span><span style="flex:1"><b>Prüfung üben</b><br><span class="muted" style="font-size:.9rem">Aufgaben verstehen + Prüfungsfälle im Kammer-Stil</span></span><span class="arrow">›</span></a>
  ${TOPICS.map(t=>{const p=topicProgress(t);return `<div class="card"><button class="topic" data-t="${t.id}">
   <span class="ico">${t.ico}</span><span style="flex:1"><span class="t">${t.title}</span><br><span class="s">${t.sub}</span><div class="bar"><i style="width:${p}%"></i></div></span><span class="arrow">›</span></button></div>`}).join("")}
  <p class="muted" style="font-size:.85rem;text-align:center">Tipp: Erst lesen, dann Karten, dann Quiz. Dein Fortschritt bleibt auf diesem Gerät gespeichert.</p>
@@ -547,7 +595,7 @@ function drawCard(){
  document.querySelectorAll("[data-cf]").forEach(b=>b.onclick=()=>{S.cardFilter=b.dataset.cf;viewKarten()});
  $("#ou").onchange=e=>{onlyUnknown=e.target.checked;viewKarten()};
  if($("#flip"))$("#flip").onclick=()=>$("#flip").classList.toggle("turned");
- if($("#yes"))$("#yes").onclick=()=>{S.known[c.id]=true;save();di++;drawCard()};
+ if($("#yes"))$("#yes").onclick=()=>{FX.ok($("#yes"));S.known[c.id]=true;save();di++;drawCard()};
  if($("#no"))$("#no").onclick=()=>{S.known[c.id]=false;save();deck.push(c);di++;drawCard()};
  if($("#again"))$("#again").onclick=viewKarten;
  if($("#resetUnknown"))$("#resetUnknown").onclick=()=>{onlyUnknown=false;viewKarten()};
@@ -559,7 +607,7 @@ function startQuiz(filter){
  S.quizFilter=filter;
  let qs=[];TOPICS.forEach(t=>{if(filter==="alle"||filter===t.id)t.quiz.forEach(q=>qs.push({...q,tid:t.id,ico:t.ico,topic:t.title}))});
  qs=shuffle(qs);if(filter==="alle")qs=qs.slice(0,15);
- Q={qs,i:0,score:0,answered:false,wrong:[]};
+ FX.reset();Q={qs,i:0,score:0,answered:false,wrong:[]};
  render();scrollTo(0,0);
 }
 function viewQuiz(){
@@ -579,11 +627,12 @@ function viewQuiz(){
   <div class="row"><button class="btn alt" id="qback">Übersicht</button><button class="btn" id="qagain">Nochmal</button></div></div>`;
   $("#qback").onclick=()=>{Q=null;render()};
   $("#qagain").onclick=()=>startQuiz(S.quizFilter);
+  if(p>=50)FX.confetti(p>=80?60:28);
   return;
  }
  const q=Q.qs[Q.i];
  app.innerHTML=`<div class="fade"><button class="back" id="qx">← Quiz beenden</button>
- <div class="qhead"><span>${q.ico} ${q.topic}</span><span>Frage ${Q.i+1}/${Q.qs.length} · ${Q.score} ✓</span></div>
+ <div class="qhead"><span>${q.ico} ${q.topic}</span><span>${FX.pill()} Frage ${Q.i+1}/${Q.qs.length} · ${Q.score} ✓</span></div>
  <div class="bar" style="margin-bottom:16px"><i style="width:${Q.i/Q.qs.length*100}%"></i></div>
  <div class="qtext">${q.q}</div>
  ${q.o.map((o,i)=>`<button class="opt" data-o="${i}">${o}</button>`).join("")}
@@ -592,7 +641,7 @@ function viewQuiz(){
  document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{
   const i=+b.dataset.o,ok=i===q.a;
   document.querySelectorAll("[data-o]").forEach(x=>{x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
-  if(!ok){b.classList.add("wrong");Q.wrong.push(q)}else Q.score++;
+  if(!ok){b.classList.add("wrong");Q.wrong.push(q);FX.bad(b)}else{Q.score++;FX.ok(b)}
   $("#ex").innerHTML=`<div class="explain ${ok?"ok":"no"}"><b>${ok?"Richtig!":"Nicht ganz."}</b> ${q.w}</div><button class="btn full" id="nx">${Q.i+1<Q.qs.length?"Weiter →":"Ergebnis anzeigen"}</button>`;
   $("#nx").onclick=()=>{Q.i++;render();scrollTo(0,0)};
  });
@@ -618,7 +667,7 @@ function viewFaelle(){
  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
   const i=+b.dataset.c,ok=i===c.a;
   document.querySelectorAll("[data-c]").forEach(x=>{x.disabled=true;if(+x.dataset.c===c.a)x.classList.add("right")});
-  if(!ok)b.classList.add("wrong");else F.score++;
+  if(!ok){b.classList.add("wrong");FX.bad(b)}else{F.score++;FX.ok(b)}
   $("#cex").innerHTML=`<div class="explain ${ok?"ok":"no"}"><b>${ok?"Richtig!":"Nicht ganz."}</b> ${c.w}</div><button class="btn full" id="cn">Nächster Fall →</button>`;
   $("#cn").onclick=()=>{F.i++;render();scrollTo(0,0)};
  });
@@ -689,7 +738,8 @@ function viewRechnen(){
   if(isNaN(v)){$("#fb").innerHTML=`<div class="explain no">Bitte eine Zahl eingeben.</div>`;return}
   const ok=Math.abs(v-target)<=0.05;
   $("#fb").innerHTML=ok?`<div class="explain ok"><b>Richtig!</b> ${eur(target)} 🎉</div>`:`<div class="explain no"><b>Noch nicht.</b> Prüf nochmal: Kirchensteuer von der Lohnsteuer, Pflege-Zuschlag nur kinderlos ab 23${R.vl?", VL erst nach dem Netto abziehen":""}.</div>`;
-  if(ok)showSteps();
+  ok?FX.ok($("#chk")):FX.bad($("#inp"));
+  if(ok){showSteps();FX.confetti(40)}
  };
  $("#sol").onclick=showSteps;
  $("#nw").onclick=()=>{newCalc();render();scrollTo(0,0)};

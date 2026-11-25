@@ -4,11 +4,12 @@ Lern-App für Lina (Ausbildung Zahnmedizinische Fachangestellte). Lina ist keine
 
 ## Aufbau
 
-- `index.html` (Startseite + Wirtschaft), `patienten.html` (LF 2 + 3) und `kariestherapie.html` (LF 4 + 5), jeweils eine eigenständige Datei (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt. Alle verlinken aufeinander.
+- `index.html` (Startseite + Wirtschaft), `patienten.html` (LF 2 + 3) und `kariestherapie.html` (LF 4 + 5) und `pruefung.html` (Prüfungsstil: Operatoren + Prüfungsfälle), jeweils eine eigenständige Datei (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt. Alle verlinken aufeinander.
 - Muss per Doppelklick und über GitHub Pages laufen. Kein Framework einführen, ohne zu fragen.
 - Mobile-first: Lina lernt hauptsächlich am Handy.
-- Inhalte liegen als Daten im Script: `TOPICS` (learn/cards/quiz), `CASES`, `RATES`. Neue Themen dort ergänzen, die Views bauen sich daraus.
-- Fortschritt in `localStorage` (Präfix `zfaWi_` bzw. `zfaLF_`), immer in try/catch.
+- Inhalte liegen als Daten im Script: `TOPICS` (learn/cards/quiz), `CASES`, `RATES`; in `pruefung.html` `OPQ` und `FAELLE`. Neue Themen dort ergänzen, die Views bauen sich daraus.
+- Animationen: Baustein `FX` (CSS + JS, in jeder Datei gleich, oben im Script). Nur `transform`/`opacity` animieren, keine Bibliotheken, `prefers-reduced-motion` respektieren. Änderungen daran in allen Dateien gleich machen.
+- Fortschritt in `localStorage` (Präfix `zfaWi_` bzw. `zfaLF_`), immer in try/catch. Lerntage in Folge: `zfaLF_tage` (gemeinsam für alle Seiten).
 
 ## Inhaltliche Regeln
 
@@ -17,6 +18,8 @@ Lern-App für Lina (Ausbildung Zahnmedizinische Fachangestellte). Lina ist keine
 - Keine Gedankenstriche (—) in Texten.
 - Fachlich korrekt bleiben (BGB-Paragraphen etc. prüfen). Sozialversicherungs- und Steuersätze ändern sich jährlich: im Rechentrainer nur als Beispielwerte kennzeichnen.
 - Jede Quizfrage hat eine Erklärung (`w`), warum die Antwort stimmt.
+
+- Prüfungsaufgaben selbst formulieren (Stil der Zahnärztekammer Niedersachsen), keine Originalaufgaben der Kammern kopieren.
 
 ## Prüfen
 

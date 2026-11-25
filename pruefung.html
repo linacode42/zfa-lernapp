@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZFA Prüfung üben</title>
+<style>
+:root{--bg:#f4f7f6;--card:#fff;--ink:#14201e;--mut:#5d6b69;--line:#dfe7e5;--ok:#15803d;--okb:#e8f6ed;--bad:#c2410c;--badb:#fdeee6;--acc:#0f766e;--mark:#fff3b0;--sit:#eef4ff;--sitb:#1d4ed8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+#app{max-width:560px;margin:0 auto;min-height:100vh;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 28px)}
+h1{font-size:26px;margin:6px 0 2px;letter-spacing:-.02em}
+h3.sec{font-size:15px;margin:22px 0 10px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.sub{color:var(--mut);font-size:14px;margin:0 0 18px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back{border:0;background:var(--card);width:40px;height:40px;border-radius:12px;font-size:20px;box-shadow:0 1px 2px rgba(0,0,0,.06);cursor:pointer;color:var(--ink)}
+.top .t{font-weight:700;font-size:16px;flex:1;line-height:1.2}
+.top .t small{display:block;font-weight:500;color:var(--mut);font-size:12px}
+.lf{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:6px solid var(--c)}
+.lf .tag{font-size:12px;font-weight:700;color:var(--c);letter-spacing:.04em}
+.lf h3{margin:2px 0 6px;font-size:17px;line-height:1.25}
+.lf p{margin:0 0 6px;font-size:14px;color:var(--mut)}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.bar i{display:block;height:100%;background:var(--c);border-radius:6px;transition:width .3s}
+.meta{font-size:12px;color:var(--mut)}
+.btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{flex:1;min-width:90px;border:0;border-radius:12px;padding:11px 10px;font-weight:650;font-size:14px;cursor:pointer;background:var(--bg);color:var(--ink);font-family:inherit}
+.btn.p{background:var(--c,var(--acc));color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.wide{display:block;width:100%;padding:15px;font-size:16px;border-radius:14px;margin-top:10px}
+.prog{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.prog .bar{flex:1;margin:0;height:8px}
+.prog span{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+.sit{background:var(--sit);border-left:4px solid var(--sitb);border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:15px}
+.sit b.h{display:block;font-size:12px;letter-spacing:.05em;color:var(--sitb);margin-bottom:4px}
+.qcard{background:var(--card);border-radius:20px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:14px}
+.qcard .lbl{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--c);letter-spacing:.04em;margin-bottom:6px}
+.qcard h2{font-size:18px;line-height:1.4;margin:0}
+.hint{font-size:13px;color:var(--mut);margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+mark{background:var(--mark);color:inherit;border-radius:4px;padding:0 2px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:9px;font:inherit;color:var(--ink);cursor:pointer;transition:transform .08s}
+.opt:active{transform:scale(.985)}
+.opt .l{flex:none;width:26px;height:26px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-weight:700;font-size:13px}
+.opt.sel{border-color:var(--c)}.opt.sel .l{background:var(--c);color:#fff}
+.opt.ok{border-color:var(--ok);background:var(--okb)}.opt.ok .l{background:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--badb)}.opt.bad .l{background:var(--bad);color:#fff}
+.opt.dim{opacity:.5}
+.row{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.row span{flex:1;font-size:15px}
+.row select{flex:none;font:inherit;font-size:15px;padding:8px 6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);max-width:52%}
+.row.ok{border-color:var(--ok);background:var(--okb)}.row.bad{border-color:var(--bad);background:var(--badb)}
+.row small{display:block;font-size:12px;color:var(--ok);font-weight:600}
+.legend{font-size:13px;color:var(--mut);margin:0 0 10px}
+.inp{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:8px}
+.inp input{flex:1;font:inherit;font-size:20px;border:0;background:transparent;color:var(--ink);outline:none;min-width:0}
+.inp b{font-size:20px}
+textarea{width:100%;min-height:96px;font:inherit;font-size:15px;border-radius:14px;border:2px solid var(--line);padding:10px 12px;background:var(--card);color:var(--ink);resize:vertical}
+.fb{border-radius:14px;padding:13px 15px;margin:4px 0 6px;font-size:15px}
+.fb.ok{background:var(--okb);color:#0f5132}.fb.bad{background:var(--badb);color:#7a2a07}.fb.neu{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.fb b{display:block;margin-bottom:3px}
+.fb ul{margin:6px 0 4px;padding-left:20px}.fb li{margin:3px 0}
+.pts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pts button{flex:1;min-width:44px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 0;font:inherit;font-weight:700;cursor:pointer}
+.pts button.sel{background:var(--c);border-color:var(--c);color:#fff}
+.wis{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.wis h4{margin:0 0 4px;font-size:16px;color:var(--c)}
+.wis p{margin:4px 0;font-size:15px}
+.wis .ex{font-size:14px;color:var(--mut)}
+.box{border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:15px}
+.box b.h{display:block;margin-bottom:4px}
+.box.why{background:#eef4ff}.box.trap{background:var(--badb)}.box.tip{background:var(--okb)}
+.box ul{margin:4px 0 0;padding-left:20px}.box li{margin:4px 0}
+.res{text-align:center;padding:22px 10px 8px}
+.ring{width:150px;height:150px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--line) 0)}
+.ring div{width:118px;height:118px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:30px;font-weight:800}
+.res h2{margin:4px 0}
+table.soll{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;font-size:14px;margin-top:14px}
+table.soll th,table.soll td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+table.soll td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tog{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:14px;box-shadow:0 1px 3px rgba(0,0,0,.05);cursor:pointer;border:0;width:100%;text-align:left;color:var(--ink);font-family:inherit}
+.tog i{flex:none;width:40px;height:24px;border-radius:12px;background:var(--line);position:relative;transition:background .2s}
+.tog i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s}
+.tog.on i{background:var(--acc)}.tog.on i:after{left:19px}
+.reset{background:none;border:0;color:var(--mut);font-size:13px;text-decoration:underline;margin:18px auto 0;display:block;cursor:pointer}
+.confirm{background:var(--badb);border-radius:14px;padding:12px;margin-top:10px;font-size:14px;text-align:center}
+.nav{display:flex;justify-content:space-between;font-size:14px}
+.nav a{color:var(--mut);text-decoration:none}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1514;--card:#19211f;--ink:#e8efed;--mut:#9aa8a5;--line:#2b3633;--okb:#12301f;--badb:#3a1d10;--mark:#5b4a10;--sit:#16213a;--sitb:#8fb0ff}.fb.ok{color:#a7e3bd}.fb.bad{color:#f7c2a6}.box.why{background:#16213a}}
+/* ---- FX: leichte Belohnungs-Animationen (nur transform/opacity) ---- */
+@property --p{syntax:'<number>';inherits:true;initial-value:0}
+@keyframes fxPop{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}
+@keyframes fxShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+@keyframes fxUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fxFloat{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
+@keyframes fxBump{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+@keyframes fxRing{from{--p:0}}
+.fx-pop{animation:fxPop .35s ease}
+.fx-shake{animation:fxShake .4s ease}
+.fx-float{position:fixed;left:50%;top:0;z-index:50;pointer-events:none;font-weight:800;font-size:22px;color:#15803d;background:#fff;padding:4px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12);white-space:nowrap;animation:fxFloat 1.05s ease-out forwards}
+.fx-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:#fff1e6;color:#c2410c;font-weight:700;font-size:13px;vertical-align:middle}
+.fx-pill.bump{animation:fxBump .45s ease}
+.fx-conf{position:fixed;top:0;left:0;width:8px;height:13px;border-radius:2px;pointer-events:none;z-index:60;will-change:transform,opacity}
+.fx-in{animation:fxUp .28s ease both}
+button{transition:transform .12s ease}
+button:active:not(:disabled){transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.fb{animation:fxUp .3s ease both}
+.ring{animation:fxRing 1s cubic-bezier(.3,.7,.4,1)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ---------- FX: kleine Belohnungen fürs Gehirn (leicht, ohne Bibliothek)
+const FX=(()=>{
+ const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const LOB=["Super!","Stark!","Genau!","Klasse!","Weiter so!","Richtig gut!","Yes! 💪"];
+ const re=(el,c)=>{if(!el||calm)return;el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};
+ const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+ function float(txt,el){if(calm)return;const r=el?el.getBoundingClientRect():{top:innerHeight/2};const d=document.createElement("div");d.className="fx-float";d.textContent=txt;d.style.top=Math.max(24,r.top-12)+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+ let streak=0;
+ // Lerntage in Folge (gemeinsam für alle Seiten)
+ const DK="zfaLF_tage",today=()=>new Date().toISOString().slice(0,10);
+ const getD=()=>{try{return JSON.parse(localStorage.getItem(DK))||{n:0,last:""}}catch(e){return{n:0,last:""}}};
+ function day(){const d=getD(),t=today();if(d.last===t)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);d.n=d.last===y?d.n+1:1;d.last=t;try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){}}
+ function dayPill(){const d=getD(),y=new Date(Date.now()-864e5).toISOString().slice(0,10);const n=(d.last===today()||d.last===y)?d.n:0;return n?`<span class="fx-pill" title="Lerntage in Folge">🔥 ${n} ${n===1?"Tag":"Tage"} in Folge</span>`:`<span class="fx-pill">🔥 Heute starten!</span>`}
+ return{
+  ok(el){streak++;day();re(el,"fx-pop");float(streak>=3?"🔥 "+streak+" in Folge!":LOB[Math.random()*LOB.length|0],el);buzz(12)},
+  bad(el){streak=0;day();re(el,"fx-shake");buzz([25,40,25])},
+  part(){streak=0;day()},
+  reset(){streak=0},
+  get streak(){return streak},
+  pill(){return streak>=2?`<span class="fx-pill bump">🔥 ${streak}</span>`:""},
+  dayPill,
+  confetti(n){if(calm||!document.body.animate)return;const cs=["#0f766e","#f59e0b","#e2614b","#6d28d9","#22c55e","#3b82f6"],x=innerWidth/2,y=innerHeight*.3;
+   for(let i=0;i<n;i++){const d=document.createElement("i");d.className="fx-conf";d.style.background=cs[i%cs.length];document.body.appendChild(d);
+    const a=Math.random()*Math.PI*2,v=90+Math.random()*200,dx=Math.cos(a)*v,dy=Math.sin(a)*v*.6-170,r=Math.random()*900-450;
+    d.animate([{transform:`translate(${x}px,${y}px) rotate(0deg)`,opacity:1},{transform:`translate(${x+dx*.7}px,${y+dy}px) rotate(${r*.5}deg)`,opacity:1,offset:.35},{transform:`translate(${x+dx}px,${y+dy+innerHeight*.6}px) rotate(${r}deg)`,opacity:0}],{duration:1300+Math.random()*700,easing:"cubic-bezier(.25,.6,.45,1)"}).onfinish=()=>d.remove()}},
+  count(el,to,suf){if(!el)return;if(calm){el.textContent=to+suf;return}const t0=performance.now(),D=900;const st=t=>{const k=Math.min(1,(t-t0)/D);el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)},
+  bar(el,from,to){if(!el||calm)return;el.style.width=from+"%";requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=to+"%"}))}
+ }})();
+// Eigene Übungsaufgaben im Stil der schriftlichen ZFA-Prüfungen der Zahnärztekammer Niedersachsen
+// (Situationsbeschreibung, Operatoren wie "Nennen Sie 3", Antwortoptionen 1 bis 5, Zuordnungen, Rechenaufgaben).
+// Es sind KEINE Originalaufgaben der Kammer.
+
+// ---------- Operatoren (Aufgabenwörter)
+const OPS = [
+ ["Nennen Sie … / Geben Sie … an / Listen Sie … auf","Nur aufzählen. Stichworte reichen, keine Erklärung nötig. Genau so viele, wie verlangt sind.","„Nennen Sie 3 Fortbildungen.“ → 3 Begriffe untereinander."],
+ ["Beschreiben Sie …","Einen Ablauf oder Zustand in eigenen Worten geordnet wiedergeben: Was passiert, in welcher Reihenfolge?","„Beschreiben Sie den Ablauf der Händedesinfektion.“ → Schritt für Schritt."],
+ ["Erläutern Sie …","Erklären UND verständlich machen, meist mit Beispiel oder Zusammenhang. Ein Stichwort reicht hier nicht.","„Erläutern Sie anhand eines Beispiels …“ → Aussage + konkretes Beispiel aus der Praxis."],
+ ["Begründen Sie … / Warum …?","Den Grund angeben: „…, weil …“. Ursache und Folge verbinden.","„Begründen Sie, warum aspiriert wird.“ → „Damit nicht in ein Gefäß gespritzt wird, weil …“"],
+ ["Ordnen Sie zu!","Jedem Begriff den passenden Buchstaben oder die passende Zahl eintragen. Manche Buchstaben werden mehrfach gebraucht, manche gar nicht.","Beispiel: Tätigkeiten den Bereichen Prävention, Kuration, Rehabilitation zuordnen."],
+ ["Bringen Sie … in die richtige Reihenfolge","Ziffern 1, 2, 3 … eintragen. Erst den ersten und letzten Schritt suchen, dann die Mitte füllen.","Aufbereitung von Medizinprodukten, Ablauf einer Füllung."],
+ ["Berechnen Sie … / Ermitteln Sie …","Rechenweg hinschreiben, Ergebnis mit Einheit (€ oder %) und auf 2 Stellen nach dem Komma.","W = G × p / 100"],
+ ["Unterscheiden Sie … / Vergleichen Sie …","Beide Seiten nennen und den Unterschied deutlich machen: „A ist …, B dagegen …“.","Desinfektion und Sterilisation unterscheiden."]
+];
+const SIGNAL = [
+ ["Zahlen in der Aufgabe","„Nennen Sie <b>3</b>“: genau 3 Antworten. Zusätzliche Antworten bringen keine Extrapunkte."],
+ ["NICHT / keine","Steht oft fett oder groß. Dann suchst du die <b>falsche</b> Aussage. Vor dem Antworten die Frage nochmal lesen."],
+ ["(A:2)","Bei Ankreuzaufgaben bedeutet das: <b>zwei</b> Antwortoptionen sind richtig. (A:1) = eine richtige."],
+ ["„keine Abkürzungen“","Ausschreiben! „ZMP“ gibt dann keinen Punkt, „Zahnmedizinische Prophylaxeassistentin“ schon."],
+ ["„genau angeben“","Vollständige Bezeichnung. „Zahnärztekammer“ ist zu ungenau, „Zahnärztekammer Niedersachsen“ ist genau."],
+ ["„(nicht: …)“","Die Klammer sagt, was du <b>nicht</b> schreiben sollst, z. B. „Aufgaben (nicht: Leistungen)“."],
+ ["insgesamt / maximal / mindestens","Kleine Wörter, große Wirkung. „insgesamt“ heißt oft: Arbeitgeber- UND Arbeitnehmeranteil zusammen."]
+];
+const OPQ = [
+ ["„Nennen Sie 3 Maßnahmen zum Brandschutz in der Praxis.“ Was erwartet der Prüfer?","Drei Maßnahmen in Stichworten, ohne Erklärung",["Drei Maßnahmen mit ausführlicher Begründung","So viele Maßnahmen wie möglich, damit sicher die richtigen dabei sind","Eine Maßnahme mit Beispiel"],"„Nennen“ = aufzählen. Genau die verlangte Anzahl, Stichworte reichen."],
+ ["„Erläutern Sie anhand eines Beispiels, warum eine Praxis mehrere Behandlungsräume hat.“ Was gehört in deine Antwort?","Eine Erklärung UND ein konkretes Beispiel aus dem Praxisalltag",["Nur das Stichwort „Zeitersparnis“","Eine Liste mit allen Räumen der Praxis","Die gesetzliche Vorschrift dazu"],"„Erläutern“ heißt erklären und veranschaulichen. „anhand eines Beispiels“ verlangt zusätzlich ein Beispiel. Nur ein Stichwort gibt meist nur einen Teil der Punkte."],
+ ["„Begründen Sie, warum vor der Injektion aspiriert wird.“ Welche Antwort passt zum Operator?","„Damit man nicht in ein Blutgefäß spritzt, weil das Anästhetikum sonst in den Kreislauf gelangt.“",["„Aspiration = Ansaugen.“","„Spritze, Kanüle, Karpule.“","„Das macht der Zahnarzt immer so.“"],"„Begründen“ = den Grund mit „weil“ angeben. Eine Definition oder Aufzählung beantwortet die Frage nach dem Warum nicht."],
+ ["„Nennen Sie 2 Fortbildungsmöglichkeiten für die ZFA (keine Abkürzungen).“ Welche Antwort gibt volle Punkte?","Zahnmedizinische Prophylaxeassistentin, Zahnmedizinische Verwaltungsassistentin",["ZMP, ZMV","ZMP, Zahnmedizinische Verwaltungsassistentin","Prophylaxe, Verwaltung"],"Die Klammer „keine Abkürzungen“ ist eine Signalwort-Falle. Abgekürzte Antworten zählen dann nicht."],
+ ["Bei einer Ankreuzaufgabe steht „(A:2)“. Was bedeutet das?","Es sind zwei Antwortoptionen richtig",["Es ist Aufgabe 2","Die Aufgabe bringt 2 Punkte, aber nur eine Antwort ist richtig","Du darfst zwei Versuche machen"],"Bei den Mustern der Zahnärztekammer Niedersachsen steht (A:1) für eine und (A:2) für zwei richtige Antwortoptionen."],
+ ["„Welche Aussage zur Sterilisation trifft <b>NICHT</b> zu?“ Was suchst du?","Die eine falsche Aussage",["Die eine richtige Aussage","Alle richtigen Aussagen","Die Aussage, die am längsten ist"],"Bei NICHT-Fragen sind vier Aussagen richtig und eine ist falsch. Genau die falsche ist die Lösung. Unter Stress liest man das NICHT leicht über."],
+ ["„Wer ist der Träger der gesetzlichen Unfallversicherung? Geben Sie diesen genau an.“ Welche Antwort ist „genau“?","Berufsgenossenschaft für Gesundheitsdienst und Wohlfahrtspflege",["Die Berufsgenossenschaft","Die Unfallkasse","Der Arbeitgeber"],"„genau angeben“ heißt: vollständige Bezeichnung. Nur „Berufsgenossenschaft“ gibt meist nur einen Teil der Punkte."],
+ ["„Welche Aufgaben (nicht: Leistungen) hat die gesetzliche Unfallversicherung?“ Was ist gemeint?","Wofür sie zuständig ist, z. B. Unfälle verhüten",["Was sie bezahlt, z. B. Verletztengeld","Wer sie bezahlt","Wie hoch der Beitrag ist"],"Die Klammer schließt eine Antwortart aus. Aufgaben = Zweck und Zuständigkeit (Unfallverhütung, Rehabilitation). Leistungen = Geld- und Sachleistungen."],
+ ["„Wie viel erhält die Rentenversicherung <b>insgesamt</b>?“ Was musst du beachten?","Arbeitnehmer- und Arbeitgeberanteil zusammenrechnen",["Nur den Abzug auf der Gehaltsabrechnung nehmen","Nur den Arbeitgeberanteil nehmen","Den Betrag durch 2 teilen"],"„insgesamt“ ist ein Signalwort. Auf der Gehaltsabrechnung steht nur der Arbeitnehmeranteil. Der Arbeitgeber zahlt bei der Rentenversicherung genauso viel dazu."],
+ ["„Beschreiben Sie das Vorgehen nach einer Stichverletzung.“ Wie baust du die Antwort auf?","Die Schritte in der richtigen Reihenfolge in ganzen Sätzen oder klaren Stichpunkten",["Nur das Wort „Durchgangsarzt“","Eine Begründung, warum Stichverletzungen gefährlich sind","Eine Liste von Krankheiten, die übertragen werden können"],"„Beschreiben“ = geordnet wiedergeben, was passiert. Bei Abläufen zählt die Reihenfolge."],
+ ["„Unterscheiden Sie Desinfektion und Sterilisation.“ Welche Antwort erfüllt den Operator?","„Desinfektion macht Keime unschädlich, sodass keine Infektion mehr möglich ist. Sterilisation tötet dagegen alle Mikroorganismen inklusive Sporen ab.“",["„Sterilisation ist besser.“","„Desinfektion: Flächen. Sterilisation: Instrumente.“","„Beides tötet Keime ab.“"],"„Unterscheiden“ verlangt beide Seiten UND den Unterschied. Das Wort „dagegen“ zeigt dem Prüfer, dass du verglichen hast."],
+ ["Du hast 46 von 81 Punkten. Grob: Reicht das in der Regel für „ausreichend“?","Ja, ab etwa 50 % gilt eine Prüfungsleistung meist als ausreichend",["Nein, man braucht mindestens 75 %","Nein, man braucht mindestens 66 %","Das hängt nur von der Note in der Berufsschule ab"],"46 von 81 sind ca. 56,8 %. Bei Kammerprüfungen gilt ein Ergebnis ab 50 von 100 Punkten in der Regel als „ausreichend“. Jede Teilantwort zählt also!"]
+];
+
+// ---------- Prüfungsfälle
+// Typen: ein (1 richtige von 5), zwei (2 richtige von 5), zuord (Kategorien), reihe (Reihenfolge), rech (Zahl), offen (Musterlösung, Selbstbewertung)
+const FAELLE = [
+{key:"lf2", lf:"LF 2", c:"#0f766e", titel:"Neue Patientin am Empfang",
+ sit:"Du arbeitest als ZFA in der Zahnarztpraxis Dr. Hansen in Oldenburg. Heute Morgen kommt Frau Petersen (34) zum ersten Mal in die Praxis. Sie ist gesetzlich versichert und hat Schmerzen im Unterkiefer. Die Auszubildende Mia (17) begleitet dich am Empfang.",
+ a:[
+ {t:"ein",q:"Was musst du bei Frau Petersen als gesetzlich versicherter Patientin beim ersten Besuch im Quartal tun?",o:["Die elektronische Gesundheitskarte (eGK) einlesen","Eine Privatrechnung vorbereiten","Eine Überweisung vom Hausarzt verlangen","Die Krankenkasse anrufen und die Behandlung genehmigen lassen","Nichts, das macht die Krankenkasse automatisch"],a:[0],w:"Die eGK wird mindestens einmal pro Quartal eingelesen. Fehlt sie, kann sie innerhalb von 10 Tagen nachgereicht werden."},
+ {t:"zwei",q:"Frau Petersen füllt den Anamnesebogen aus. Welche <b>zwei</b> Angaben gehören zur allgemeinen Anamnese?",o:["Allergien","Regelmäßig eingenommene Medikamente","Schmerzen im Unterkiefer seit drei Tagen","Name des Arbeitgebers","Wunschtermin für die nächste Behandlung"],a:[0,1],w:"Allgemeine Anamnese = Gesundheit des ganzen Körpers (Vorerkrankungen, Allergien, Medikamente, Schwangerschaft). Die Schmerzen im Unterkiefer gehören zur speziellen (zahnärztlichen) Anamnese."},
+ {t:"offen",p:2,s:"Im Anamnesebogen hat Frau Petersen angegeben, dass sie täglich einen Blutverdünner (Gerinnungshemmer) nimmt.",q:"Erläutern Sie, warum diese Angabe für die Behandlung wichtig ist.",l:["Blutverdünner hemmen die Blutgerinnung, es besteht ein erhöhtes Nachblutungsrisiko (z. B. bei Extraktion, Spritze, Zahnsteinentfernung).","Der Zahnarzt muss informiert werden und plant die Behandlung entsprechend, ggf. Rücksprache mit dem Hausarzt."],w:"Erläutern = erklären + Zusammenhang. Für 2 Punkte: Wirkung (Blutung) UND was daraus für die Behandlung folgt."},
+ {t:"offen",p:3,s:"Am Empfang ist viel los. Hinter Frau Petersen warten zwei weitere Patienten.",q:"Nennen Sie 3 Maßnahmen, mit denen Sie am Empfang die Schweigepflicht und den Datenschutz einhalten.",l:["Diskretionsabstand / Wartelinie einhalten lassen","Leise sprechen, keine Diagnosen laut nennen","Bildschirm so stellen, dass ihn Patienten nicht sehen können","Keine Patientenakten oder Unterlagen offen liegen lassen","Telefonate mit Patientendaten nicht vor anderen Patienten führen"],w:"Jede richtige Maßnahme = 1 Punkt. Nenne genau 3."},
+ {t:"zuord",q:"Mia soll lernen, wie Kommunikation funktioniert. Ordnen Sie die Beispiele zu!",kat:["verbal","nonverbal","paraverbal"],items:[["„Guten Morgen, Frau Petersen!“",0],["Freundliches Lächeln",1],["Ruhiger, langsamer Tonfall",2],["Blickkontakt halten",1],["Ablauf der Untersuchung erklären",0],["Angemessene Lautstärke",2]],w:"Verbal = die Worte. Nonverbal = Körpersprache (Mimik, Gestik, Blickkontakt). Paraverbal = WIE etwas gesagt wird (Tonfall, Lautstärke, Tempo)."},
+ {t:"ein",q:"Zwischen Frau Petersen und Dr. Hansen kommt ein Behandlungsvertrag zustande. Zu welcher Vertragsart gehört er?",o:["Dienstvertrag","Werkvertrag","Kaufvertrag","Mietvertrag","Leihvertrag"],a:[0],w:"Behandlungsvertrag nach § 630a BGB ist ein besonderer Dienstvertrag: Geschuldet ist die Behandlung nach fachlichem Standard, kein Erfolg (Heilung)."},
+ {t:"ein",q:"Wie lange muss die Patientenakte von Frau Petersen <b>mindestens</b> aufbewahrt werden?",o:["10 Jahre nach Abschluss der Behandlung","2 Jahre nach der letzten Behandlung","5 Jahre ab dem ersten Besuch","30 Jahre nach Abschluss der Behandlung","Bis die Patientin die Praxis wechselt"],a:[0],w:"§ 630f BGB: 10 Jahre nach Abschluss der Behandlung, soweit andere Vorschriften keine längere Frist verlangen."},
+ {t:"offen",p:3,s:"Im Wartezimmer wird Frau Petersen plötzlich blass, ihr ist schwindelig und sie droht vom Stuhl zu rutschen.",q:"Nennen Sie 3 Sofortmaßnahmen.",l:["Hilfe holen / Zahnarzt sofort informieren","Patientin hinlegen und Beine hochlagern (Schocklage)","Ansprechen, Atmung und Puls kontrollieren","Beengende Kleidung öffnen, für frische Luft sorgen","Bei Bewusstlosigkeit oder Verschlechterung Notruf 112"],w:"Typisch für einen Kreislaufkollaps (Synkope). Merksatz: Hilfe holen, hinlegen, Beine hoch, beobachten."},
+ {t:"offen",p:4,q:"Mia findet im Anamnesebogen viele Abkürzungen. Geben Sie die Bedeutung an: <br>eGK · GKV · PKV · DSGVO",l:["eGK = elektronische Gesundheitskarte","GKV = gesetzliche Krankenversicherung","PKV = private Krankenversicherung","DSGVO = Datenschutz-Grundverordnung"],w:"Abkürzungsfragen kommen in fast jeder Prüfung vor. Je 1 Punkt, nur bei vollständiger Bedeutung."}
+ ]},
+{key:"lf3", lf:"LF 3", c:"#1d4ed8", titel:"Instrumente nach der Behandlung",
+ sit:"Bei Dr. Hansen wurde gerade ein Zahn extrahiert. Die Auszubildende Mia soll mit dir den Behandlungsraum nachbereiten und die Instrumente aufbereiten. Du erklärst ihr dabei die Hygienevorschriften.",
+ a:[
+ {t:"zuord",q:"Ordnen Sie die Medizinprodukte der richtigen Risikogruppe zu!",kat:["unkritisch","semikritisch A","semikritisch B","kritisch A","kritisch B"],items:[["Mundspiegel",1],["Extraktionszange",3],["Turbine",2],["Chirurgisches Winkelstück",4],["Blutdruckmanschette",0]],w:"Semikritisch = Kontakt mit Schleimhaut. Kritisch = durchdringt Haut oder Schleimhaut. B = erhöhte Anforderungen an die Aufbereitung (z. B. Hohlräume, Gelenke). Unkritisch = nur intakte Haut."},
+ {t:"reihe",q:"Bringen Sie die Schritte der Aufbereitung der Extraktionszange in die richtige Reihenfolge!",items:["Vorbereiten (grob reinigen, nicht antrocknen lassen)","Reinigen und Desinfizieren im RDG","Kontrolle auf Sauberkeit und Unversehrtheit, Pflege","Verpacken und Kennzeichnen","Sterilisieren","Dokumentierte Freigabe und Lagerung"],w:"Erst sauber, dann steril: Reinigung und Desinfektion kommen immer VOR der Sterilisation. Die Freigabe macht eine sachkundige Person und dokumentiert sie."},
+ {t:"offen",p:2,q:"Begründen Sie, warum Mia die benutzten Instrumente nicht antrocknen lassen darf.",l:["Angetrocknetes Blut und Eiweiß haften fest und lassen sich schlecht entfernen.","Unter den Rückständen sind Keime geschützt, Desinfektion und Sterilisation wirken dann nicht sicher."],w:"Begründen = Grund + Folge. Für 2 Punkte beide Teile: schlechte Reinigung UND Keimschutz."},
+ {t:"zwei",q:"Welche <b>zwei</b> Aussagen zur hygienischen Händedesinfektion treffen zu?",o:["Die Einwirkzeit beträgt in der Regel 30 Sekunden.","Die Hände müssen vollständig benetzt sein.","Ein glatter Ehering darf getragen werden.","Handschuhe werden auf die noch feuchten Hände gezogen.","Gründliches Händewaschen ersetzt die Händedesinfektion."],a:[0,1],w:"Kein Schmuck, auch kein Ehering. Handschuhe erst auf trockene Hände. Waschen ersetzt Desinfektion nicht."},
+ {t:"ein",q:"Welche Aussage zur Dampfsterilisation trifft <b>NICHT</b> zu?",o:["Sie ersetzt die vorherige Reinigung der Instrumente.","Ein Klasse-B-Sterilisator ist für Hohlkörper wie Übertragungsinstrumente geeignet.","Sterilisation tötet alle Mikroorganismen einschließlich Sporen ab.","Ein gängiges Programm arbeitet mit 134 °C.","Jede Charge wird dokumentiert und freigegeben."],a:[0],w:"NICHT-Frage: Gesucht ist die falsche Aussage. Sterilisation ersetzt nie die Reinigung. Schmutz schützt Keime."},
+ {t:"reihe",s:"Beim Einsortieren sticht sich Mia an einer benutzten Kanüle.",q:"Bringen Sie die Maßnahmen nach der Stichverletzung in die richtige Reihenfolge!",items:["Blutung fördern (Wunde ausdrücken)","Wunde desinfizieren","Zahnarzt informieren","Durchgangsarzt (D-Arzt) aufsuchen","Unfall dokumentieren und melden"],w:"Erst Erste Hilfe an der Wunde, dann informieren, dann ärztliche Abklärung beim D-Arzt, zum Schluss Dokumentation (Verbandbuch, Unfallanzeige an die BGW)."},
+ {t:"ein",q:"Wer trägt die Kosten der Hepatitis-B-Impfung für Mia?",o:["Der Arbeitgeber (Dr. Hansen)","Mia selbst","Mias Krankenkasse","Die Berufsschule","Die Zahnärztekammer"],a:[0],w:"Nach der Verordnung zur arbeitsmedizinischen Vorsorge muss der Arbeitgeber die Impfung anbieten und bezahlen."},
+ {t:"ein",q:"Das Flächendesinfektionsmittel ist „begrenzt viruzid“. Gegen welche Viren wirkt es sicher?",o:["Gegen behüllte Viren wie HBV, HCV und HIV","Gegen alle Viren","Gegen keine Viren, nur gegen Bakterien","Nur gegen Noroviren","Gegen Sporen"],a:[0],w:"Begrenzt viruzid = wirksam gegen behüllte Viren. Für unbehüllte Viren (z. B. Noroviren) braucht man „viruzid“."},
+ {t:"offen",p:4,q:"Geben Sie die Bedeutung der Abkürzungen an: <br>RDG · PSA · BGW · RKI",l:["RDG = Reinigungs- und Desinfektionsgerät","PSA = persönliche Schutzausrüstung","BGW = Berufsgenossenschaft für Gesundheitsdienst und Wohlfahrtspflege","RKI = Robert Koch-Institut"],w:"Je 1 Punkt. Die BGW wird in Prüfungen gern „genau“ abgefragt."}
+ ]},
+{key:"lf4", lf:"LF 4", c:"#b45309", titel:"Kompositfüllung an Zahn 36",
+ sit:"Herr Okafor (45) ist Kassenpatient. Auf dem Röntgenbild sieht Dr. Hansen eine Karies an Zahn 36, mesial und okklusal. Der Zahn soll heute eine Kompositfüllung bekommen. Du assistierst.",
+ a:[
+ {t:"ein",q:"Um welchen Zahn handelt es sich bei Zahn 36?",o:["Erster Molar im Unterkiefer links","Erster Molar im Oberkiefer links","Erster Molar im Unterkiefer rechts","Zweiter Prämolar im Unterkiefer links","Zweiter Molar im Unterkiefer links"],a:[0],w:"Quadrant 3 = Unterkiefer links. 6 = erster Molar."},
+ {t:"ein",q:"Welcher Kavitätenklasse nach Black entspricht die mo-Karies an Zahn 36?",o:["Klasse II","Klasse I","Klasse III","Klasse IV","Klasse V"],a:[0],w:"Klasse II = approximal (hier mesial) an Seitenzähnen. Klasse I wäre nur okklusal (Fissuren)."},
+ {t:"ein",q:"Mit welcher Röntgenaufnahme findet man Karies an den Approximalflächen am besten?",o:["Bissflügelaufnahme","Fernröntgenseitenbild","Panoramaschichtaufnahme (OPG) allein","Aufbissaufnahme","Röntgenmessaufnahme"],a:[0],w:"Bissflügelaufnahmen zeigen die Kronen von OK und UK übereinander, ideal für Approximalkaries."},
+ {t:"ein",q:"Welche Anästhesie wird bei Zahn 36 meistens gemacht?",o:["Leitungsanästhesie am Foramen mandibulae","Infiltrationsanästhesie am Gaumen","Oberflächenanästhesie allein","Leitungsanästhesie am Foramen infraorbitale","Intraligamentäre Anästhesie an allen Zähnen"],a:[0],w:"Der Unterkieferknochen ist dick. Darum wird der Nervus alveolaris inferior am Foramen mandibulae betäubt (Leitungsanästhesie)."},
+ {t:"zwei",q:"Welche <b>zwei</b> Hilfsmittel legen Sie für die Kompositfüllung zusätzlich bereit?",o:["Matrize","Polymerisationslampe","Extraktionszange","Hebel nach Bein","Exstirpationsnadel"],a:[0,1],w:"Für die mo-Füllung braucht man eine Matrize (ersetzt die fehlende Wand) und eine Lampe zum Aushärten. Zange und Hebel sind für die Extraktion, die Exstirpationsnadel für die Endo."},
+ {t:"reihe",q:"Bringen Sie die Behandlungsschritte in die richtige Reihenfolge!",items:["Anästhesie","Trockenlegung (z. B. Kofferdam)","Präparation und Kariesentfernung","Matrize und Keil anlegen","Ätzen und Bonden","Komposit in Schichten einbringen und lichthärten","Ausarbeiten, Okklusion prüfen, polieren"],w:"Erst betäuben und trocken legen, dann präparieren. Matrize vor dem Ätzen, damit die Nachbarzähne geschützt sind. Polieren immer am Schluss."},
+ {t:"offen",p:2,q:"Erläutern Sie, warum Komposit in Schichten von höchstens 2 mm eingebracht wird.",l:["Das Licht der Polymerisationslampe härtet nur ca. 2 mm sicher durch, sonst bleibt unten weiches Material.","Kleine Schichten verringern die Schrumpfung beim Aushärten, dadurch entsteht weniger Randspalt (Sekundärkaries)."],w:"Zwei Gründe, je 1 Punkt: Durchhärtung und Schrumpfung."},
+ {t:"zuord",q:"Ordnen Sie die Beschreibungen dem Kariesstadium zu!",kat:["Initialkaries","Caries superficialis","Caries media","Caries profunda"],items:[["Kreidig weißer Fleck, Oberfläche noch intakt",0],["Karies nur im Schmelz",1],["Karies hat das Dentin erreicht",2],["Karies reicht bis nah an die Pulpa",3]],w:"Initialkaries (White Spot) ist noch umkehrbar (Fluorid). Profunda = pulpanah, dann oft Calciumhydroxid (Cp)."},
+ {t:"ein",q:"Welche BEMA-Position wird für die zweiflächige Füllung (mo) abgerechnet?",o:["F2 (13b)","F1 (13a)","F3 (13c)","Cp (25)","I (40)"],a:[0],w:"F1 = einflächig, F2 = zweiflächig, F3 = dreiflächig, F4 = mehr als dreiflächig."},
+ {t:"offen",p:4,q:"Nennen Sie die 4 Faktoren, die für die Entstehung von Karies zusammenkommen müssen.",l:["Wirt (Zahn)","Mikroorganismen (Plaque-Bakterien, z. B. Streptococcus mutans)","Substrat (Zucker / Kohlenhydrate)","Zeit"],w:"Eselsbrücke: Zahn, Bakterien, Zucker, Zeit. Fehlt einer, entsteht keine Karies."}
+ ]},
+{key:"lf5", lf:"LF 5", c:"#9d174d", titel:"Wurzelkanalbehandlung an Zahn 21",
+ sit:"Frau Yilmaz (52) ruft morgens an. Sie hat seit zwei Nächten pochende Schmerzen im Oberkiefer vorne, Wärme macht es schlimmer. Dr. Hansen untersucht Zahn 21 und entscheidet sich für eine Wurzelkanalbehandlung.",
+ a:[
+ {t:"ein",q:"Welche Diagnose passt zu den Beschwerden von Frau Yilmaz?",o:["Irreversible Pulpitis","Reversible Pulpitis","Initialkaries","Gingivitis","Überempfindliche Zahnhälse"],a:[0],w:"Anhaltender, pochender Schmerz, nachts, Wärme verstärkt = irreversible (nicht mehr heilbare) Pulpitis. Bei reversibler Pulpitis ist der Schmerz kurz und hört schnell auf."},
+ {t:"offen",p:3,q:"Nennen Sie 3 Untersuchungen, mit denen der Zahnarzt den Zustand von Zahn 21 prüft.",l:["Sensibilitätstest (Kältespray auf Wattepellet)","Perkussionstest (Klopftest)","Röntgenaufnahme (Einzelzahnfilm)","Palpation (Abtasten)"],w:"Je 1 Punkt. Fachbegriff oder Erklärung in Klammern beides gut."},
+ {t:"reihe",q:"Bringen Sie die Schritte der Wurzelkanalbehandlung in die richtige Reihenfolge!",items:["Anästhesie","Kofferdam anlegen","Trepanation (Zahn eröffnen)","Exstirpation (Pulpa entfernen)","Längenbestimmung","Aufbereitung mit Spülung","Wurzelfüllung","Röntgenkontrolle"],w:"Erst die Länge bestimmen, dann aufbereiten. Die Röntgenkontrolle zeigt am Schluss, ob die Wurzelfüllung dicht bis zur Spitze reicht."},
+ {t:"zwei",q:"Welche <b>zwei</b> Aussagen zum Kofferdam treffen zu?",o:["Er schützt vor dem Verschlucken oder Einatmen kleiner Instrumente.","Er hält Speichel und Bakterien vom Wurzelkanal fern.","Er ersetzt die Anästhesie.","Er wird erst nach der Wurzelfüllung angelegt.","Er wird nur im Unterkiefer verwendet."],a:[0,1],w:"Kofferdam = absolute Trockenlegung. Schutz für Patient (Aspiration) und Behandlung (keine Keime aus dem Speichel)."},
+ {t:"zuord",q:"Ordnen Sie den Spüllösungen ihre Hauptaufgabe zu!",kat:["löst Gewebe auf und desinfiziert","entfernt die Schmierschicht","antibakteriell, ohne Gewebe aufzulösen","neutrale Zwischenspülung"],items:[["NaOCl (Natriumhypochlorit)",0],["EDTA",1],["CHX (Chlorhexidin)",2],["NaCl (Kochsalzlösung)",3]],w:"Zwischen NaOCl und CHX wird gespült (z. B. NaCl), sonst entsteht ein brauner Niederschlag."},
+ {t:"ein",q:"Welche Farbe hat eine Feile der ISO-Größe 25?",o:["Rot","Gelb","Blau","Weiß","Grün"],a:[0],w:"15 weiß, 20 gelb, 25 rot, 30 blau, 35 grün, 40 schwarz. ISO 25 = 0,25 mm Spitzendurchmesser."},
+ {t:"offen",p:2,q:"Begründen Sie, warum Natriumhypochlorit nicht über die Wurzelspitze hinaus gepresst werden darf.",l:["Natriumhypochlorit löst Gewebe auf und wirkt ätzend.","Gelangt es ins Gewebe um die Wurzelspitze, drohen starke Schmerzen, Schwellung und Gewebeschäden."],w:"Begründen: Eigenschaft (gewebeauflösend) + Folge für den Patienten."},
+ {t:"ein",q:"Wie viele Wurzelkanäle hat Zahn 21 in der Regel?",o:["1","2","3","4","Unterschiedlich, meistens 3"],a:[0],w:"Frontzähne haben meistens einen Kanal. Obere Molaren haben 3 oder 4, untere Molaren meist 3."},
+ {t:"ein",q:"Mit welcher BEMA-Position wird die Aufbereitung des Wurzelkanals abgerechnet?",o:["WK (32)","WF (35)","Trep1 (31)","Med (34)","VitE (28)"],a:[0],w:"WK (32) = Aufbereitung je Kanal. WF (35) = Wurzelfüllung, Trep1 (31) = Trepanation, Med (34) = medikamentöse Einlage, VitE (28) = Vitalexstirpation."}
+ ]},
+{key:"wiso", lf:"WiSo", c:"#6d28d9", titel:"Ausbildungsstart in der Praxis",
+ sit:"Mia (17) hat ihre Ausbildung zur ZFA bei Dr. Hansen in Oldenburg begonnen. In der Mittagspause stellt sie dir viele Fragen zu ihrem Vertrag, zur Berufsschule und zu ihrer ersten Abrechnung. Beantworten Sie die Fragen für Mia.",
+ a:[
+ {t:"ein",q:"Nach welchem System wird Mia ausgebildet?",o:["Duales System","Schulisches System","Modulsystem","Hochschulsystem","Praktikumssystem"],a:[0],w:"Dual = zwei Lernorte: Ausbildungspraxis und Berufsschule."},
+ {t:"ein",q:"Welches Gesetz regelt die Berufsausbildung von Mia hauptsächlich?",o:["Berufsbildungsgesetz (BBiG)","Jugendarbeitsschutzgesetz (JArbSchG)","Bürgerliches Gesetzbuch (BGB)","Zahnheilkundegesetz","Mutterschutzgesetz"],a:[0],w:"Das BBiG regelt die Ausbildung. Das JArbSchG gilt zusätzlich, weil Mia noch minderjährig ist, regelt aber nicht die Ausbildung selbst."},
+ {t:"offen",p:3,q:"Mia ist noch nicht volljährig. Nennen Sie alle, die den Berufsausbildungsvertrag unterschreiben müssen.",l:["Dr. Hansen als Ausbildender","Mia als Auszubildende","Mias Eltern bzw. gesetzliche Vertreter"],w:"Minderjährige sind beschränkt geschäftsfähig (7 bis 17 Jahre). Darum müssen die gesetzlichen Vertreter zustimmen und mit unterschreiben."},
+ {t:"ein",q:"Wie lang darf die Probezeit in Mias Ausbildungsvertrag <b>höchstens</b> sein?",o:["4 Monate","1 Monat","3 Monate","6 Monate","12 Monate"],a:[0],w:"§ 20 BBiG: mindestens 1 Monat, höchstens 4 Monate."},
+ {t:"offen",p:1,q:"Welche Institution regelt und überwacht Mias Ausbildung in der Praxis? Geben Sie diese genau an.",l:["Zahnärztekammer Niedersachsen (ZKN)"],w:"„genau angeben“: Nur „Zahnärztekammer“ ist zu ungenau und gibt oft nur einen halben Punkt."},
+ {t:"zuord",q:"Mia kennt jetzt die ZKN und die KZVN. Ordnen Sie zu, wer zuständig ist!",kat:["ZKN (Zahnärztekammer Niedersachsen)","KZVN (Kassenzahnärztliche Vereinigung Niedersachsen)"],items:[["Abnahme der ZFA-Abschlussprüfung",0],["Auszahlung des Honorars für Kassenleistungen",1],["Fortbildung zum Strahlenschutz für Zahnärzte",0],["Verträge mit den Krankenkassen",1],["Organisation des zahnärztlichen Notdienstes",1],["Berufsaufsicht über alle Zahnärzte",0]],w:"Kammer = alle Zahnärzte, Beruf, Ausbildung, Fortbildung. KZV = Vertragszahnärzte, alles rund um die Kassenabrechnung und die Sicherstellung der Versorgung (auch Notdienst)."},
+ {t:"zwei",q:"Welche <b>zwei</b> Aussagen zur gesetzlichen Unfallversicherung treffen zu?",o:["Den Beitrag zahlt allein der Arbeitgeber.","Träger ist für Mia die Berufsgenossenschaft für Gesundheitsdienst und Wohlfahrtspflege (BGW).","Arbeitgeber und Arbeitnehmer zahlen je die Hälfte.","Unfälle in der Freizeit sind immer versichert.","Der Beitrag steht als Abzug auf Mias Gehaltsabrechnung."],a:[0,1],w:"Weil nur der Arbeitgeber zahlt, taucht die Unfallversicherung NICHT auf der Gehaltsabrechnung auf. Versichert sind Arbeits-, Wege- und Schulunfälle sowie Berufskrankheiten."},
+ {t:"rech",p:2,s:"<b>Beispielwerte!</b> Die echten Sätze ändern sich jedes Jahr. In der Prüfung stehen sie in der Aufgabe.",q:"Mias Bruttoausbildungsvergütung beträgt 1.000,00 €. Für die Sozialversicherungen werden ihr insgesamt 21 % abgezogen. Berechnen Sie den Abzug in €.",a:210,unit:"€",weg:"W = G × p / 100 = 1.000,00 € × 21 / 100 = 210,00 €",w:"Formel der Prozentrechnung: Prozentwert W = Grundwert G × Prozentsatz p / 100."},
+ {t:"rech",p:2,s:"<b>Beispielwerte!</b> Die ZFA Jessica verdient 2.600,00 € brutto. Ihr werden 9,3 % für die Rentenversicherung abgezogen.",q:"Ermitteln Sie, wie viel die Rentenversicherung aufgrund von Jessicas Arbeitsverhältnis <b>insgesamt</b> erhält.",a:483.6,unit:"€",weg:"Arbeitnehmeranteil: 2.600,00 € × 9,3 / 100 = 241,80 €. Der Arbeitgeber zahlt denselben Betrag. Insgesamt: 241,80 € + 241,80 € = 483,60 €",w:"Signalwort „insgesamt“: Arbeitnehmer- UND Arbeitgeberanteil. Wer nur 241,80 € einträgt, ist in die Falle getappt."},
+ {t:"rech",p:1,s:"In ihrer ersten Klassenarbeit hat Mia 46 von 80 Punkten erreicht.",q:"Berechnen Sie, wie viel Prozent das sind.",a:57.5,unit:"%",weg:"p = W × 100 / G = 46 × 100 / 80 = 57,5 %",w:"Prozentsatz gesucht: p = W × 100 / G."},
+ {t:"offen",p:3,q:"Nennen Sie 3 Aufstiegsfortbildungen für die ZFA. Geben Sie dabei keine Abkürzungen an.",l:["Zahnmedizinische Prophylaxeassistentin","Zahnmedizinische Fachassistentin","Zahnmedizinische Verwaltungsassistentin","Dentalhygienikerin"],w:"„keine Abkürzungen“: ZMP, ZMF, ZMV oder DH würden hier keinen Punkt geben."}
+ ]}
+];
+
+// ---------- Speicher (nur auf diesem Gerät)
+const KEY="zfaLF_pruefung";
+let S={best:{},op:0,hl:true,runs:0};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)S=Object.assign(S,s)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const $=document.getElementById("app");
+const ABC="ABCDEFGH";
+let run=null, confirmReset=false;
+const soll=t=>t.t==="ein"?1:t.t==="zwei"?2:(t.t==="zuord"||t.t==="reihe")?t.items.length:t.p;
+
+// Signalwörter markieren (nur im Text, nicht in HTML-Tags)
+const HL=/(Nennen Sie|Geben Sie|Listen Sie|Beschreiben Sie|Erläutern Sie|Begründen Sie|Berechnen Sie|Ermitteln Sie|Ordnen Sie|Bringen Sie|Unterscheiden Sie|NICHT|keine Abkürzungen|genau|insgesamt|höchstens|mindestens|zwei\b|alle\b|\b[2-9]\b(?= [A-ZÄÖÜ]))/g;
+function hl(s){if(!S.hl)return s;return s.split(/(<[^>]+>)/).map(p=>p.startsWith("<")?p:p.replace(HL,"<mark>$1</mark>")).join("")}
+
+function home(){
+  const total=FAELLE.reduce((n,f)=>n+f.a.length,0);
+  let h=`<div class="nav"><a href="index.html">‹ Startseite</a><a href="patienten.html">Fachkunde-Quiz ›</a></div>
+  <h1>Prüfung üben</h1><p class="sub">Aufgaben im Stil der Kammerprüfung Niedersachsen &nbsp;${FX.dayPill()}</p>
+  <div class="box why"><b class="h">💡 Warum das hilft</b>In der Prüfung weißt du oft mehr, als du Punkte bekommst. Punkte gehen verloren, weil man unter Stress die Aufgabe falsch liest: „Nennen“ statt „Erläutern“, das NICHT überlesen, Abkürzungen trotz „keine Abkürzungen“. Hier übst du genau das.</div>
+  <h3 class="sec">1 · Aufgaben verstehen</h3>
+  <div class="lf" style="--c:#0f766e"><div class="tag">OPERATOREN & SIGNALWÖRTER</div><h3>Was will die Aufgabe von mir?</h3>
+   <div class="bar"><i style="width:${Math.round(S.op/OPQ.length*100)}%"></i></div><div class="meta">Bestes Ergebnis: ${S.op} / ${OPQ.length}</div>
+   <div class="btns"><button class="btn" onclick="ops()">📖 Erklärung</button><button class="btn p" onclick="opQuiz()">▶ Training</button></div></div>
+  <h3 class="sec">2 · Prüfungsfälle (${total} Aufgaben)</h3>`;
+  FAELLE.forEach(f=>{
+    const b=S.best[f.key], sp=f.a.reduce((n,t)=>n+soll(t),0);
+    h+=`<div class="lf" style="--c:${f.c}"><div class="tag">${f.lf} · ${f.a.length} AUFGABEN · ${sp} PUNKTE</div><h3>${f.titel}</h3>
+    <div class="bar"><i style="width:${b||0}%"></i></div><div class="meta">${b==null?"Noch nicht bearbeitet":"Bestes Ergebnis: "+b+" %"+(b>=50?" ✓":"")}</div>
+    <div class="btns"><button class="btn p" onclick="startFall('${f.key}')">▶ Fall bearbeiten</button></div></div>`;
+  });
+  h+=`<button class="tog ${S.hl?"on":""}" onclick="S.hl=!S.hl;save();home()"><i></i><span><b>Signalwörter markieren</b><br><span style="color:var(--mut)">Hebt Operatoren, Zahlen und NICHT gelb hervor. Später ausschalten, damit du sie selbst findest.</span></span></button>`;
+  h+= confirmReset
+   ? `<div class="confirm">Fortschritt wirklich löschen?<div class="btns"><button class="btn" onclick="confirmReset=false;home()">Abbrechen</button><button class="btn p" style="--c:#c2410c" onclick="doReset()">Löschen</button></div></div>`
+   : `<button class="reset" onclick="confirmReset=true;home()">Fortschritt zurücksetzen</button>`;
+  $.innerHTML=h; scrollTo(0,0);
+}
+function doReset(){S={best:{},op:0,hl:S.hl,runs:0};save();confirmReset=false;home()}
+
+function ops(){
+  let h=`<div class="top" style="--c:#0f766e"><button class="back" onclick="home()">‹</button><div class="t">Operatoren<small>Was die Aufgabe von dir verlangt</small></div></div>`;
+  OPS.forEach(([t,d,ex])=>{h+=`<div class="wis" style="--c:#0f766e"><h4>${t}</h4><p>${d}</p><p class="ex">${ex}</p></div>`});
+  h+=`<h3 class="sec">Signalwörter: hier gehen Punkte verloren</h3><div class="box trap"><b class="h">⚠️ Prüfungsfallen</b><ul>${SIGNAL.map(([a,b])=>`<li><b>${a}:</b> ${b}</li>`).join("")}</ul></div>
+  <div class="box tip"><b class="h">🧠 Eselsbrücke für Stress-Momente</b>Erst das <b>Verb</b> suchen (Was soll ich tun?), dann die <b>Zahl</b> (Wie viele?), dann die <b>Klammer</b> (Was ist verboten?). Erst danach antworten.</div>
+  <button class="btn p wide" style="--c:#0f766e" onclick="opQuiz()">▶ Jetzt trainieren</button>`;
+  $.innerHTML=h; scrollTo(0,0);
+}
+
+// ---------- Operatoren-Training (Multiple Choice)
+let oq=null;
+function opQuiz(){FX.reset();oq={qs:shuffle(OPQ).map(q=>({q,opts:shuffle([q[1],...q[2]])})),i:0,right:0,answered:false};showOp()}
+function showOp(){
+  const z=oq,x=z.qs[z.i],n=z.qs.length;
+  let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">Aufgaben verstehen</div></div>
+  <div class="prog" style="--c:#0f766e"><div class="bar"><i style="width:${z.i/n*100}%"></i></div><span>${FX.pill()} ${z.i+1}/${n}</span></div>
+  <div class="qcard" style="--c:#0f766e"><div class="lbl"><span>FRAGE ${z.i+1}</span></div><h2>${hl(x.q[0])}</h2></div>`;
+  x.opts.forEach((o,j)=>{h+=`<button class="opt" onclick="pickOp(${j})"><span class="l">${j+1}</span><span>${o}</span></button>`});
+  h+=`<div id="after"></div>`;$.innerHTML=h;scrollTo(0,0);
+}
+function pickOp(j){
+  const z=oq;if(z.answered)return;z.answered=true;const x=z.qs[z.i],ok=x.opts[j]===x.q[1];
+  document.querySelectorAll(".opt").forEach((b,k)=>{if(x.opts[k]===x.q[1])b.classList.add("ok");else if(k===j)b.classList.add("bad");else b.classList.add("dim")});
+  {const bt=document.querySelectorAll(".opt")[j];ok?FX.ok(bt):FX.bad(bt)}
+  if(ok)z.right++;
+  const last=z.i===z.qs.length-1;
+  document.getElementById("after").innerHTML=`<div class="fb ${ok?"ok":"bad"}"><b>${ok?"✓ Richtig!":"✗ Nicht ganz."}</b>${x.q[3]}</div>
+  <button class="btn p wide" style="--c:#0f766e" onclick="nextOp()">${last?"Ergebnis ansehen":"Weiter →"}</button>`;
+  document.getElementById("after").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function nextOp(){const z=oq;z.answered=false;z.i++;if(z.i<z.qs.length)return showOp();
+  const n=z.qs.length,p=Math.round(z.right/n*100);S.op=Math.max(S.op,z.right);save();
+  $.innerHTML=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">Aufgaben verstehen</div></div>
+  <div class="res"><div class="ring" style="--c:#0f766e;--p:${p}"><div>${p}%</div></div><h2>${p>=80?"Du liest wie ein Profi! 💪":"Dranbleiben, das wird 🌱"}</h2><p class="sub">${z.right} von ${n} richtig</p></div>
+  <div class="btns"><button class="btn" onclick="home()">Startseite</button><button class="btn p" style="--c:#0f766e" onclick="opQuiz()">Nochmal</button></div>`;scrollTo(0,0);
+  FX.count(document.querySelector(".ring div"),p,"%");if(p>=50)FX.confetti(p>=80?60:28)}
+
+// ---------- Prüfungsfall
+function startFall(k){
+  const f=FAELLE.find(x=>x.key===k);
+  FX.reset();run={f,i:0,ist:[],sel:[],done:false,tasks:f.a.map(t=>({...t,
+    ord:t.o?shuffle(t.o.map((_,i)=>i)):null,
+    rows:t.items?shuffle(t.items.map((_,i)=>i)):null}))};
+  let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">${f.titel}<small>${f.lf} · Prüfungsfall</small></div></div>
+  <div class="sit"><b class="h">SITUATION</b>${f.sit}</div>
+  <div class="box tip"><b class="h">So läuft es wie in der Prüfung</b><ul><li>${f.a.length} Aufgaben, zusammen ${f.a.reduce((n,t)=>n+soll(t),0)} Punkte (Soll).</li><li>Bei offenen Aufgaben schreibst du deine Antwort, siehst dann die Musterlösung und gibst dir selbst ehrlich Punkte.</li><li>Ab 50 % ist es in der Regel „ausreichend“.</li></ul></div>
+  <button class="btn p wide" style="--c:${f.c}" onclick="showT()">▶ Los geht's</button>`;
+  $.innerHTML=h;scrollTo(0,0);
+}
+const INSTR={ein:"→ Tragen Sie die Zahl der richtigen Antwortoption ein.",zwei:"(A:2) → Tragen Sie die Zahlen der zwei richtigen Antwortoptionen ein.",zuord:"→ Tragen Sie jeweils den passenden Buchstaben ein.",reihe:"→ Tragen Sie die Ziffern in der richtigen Reihenfolge ein (1 = zuerst).",rech:"→ Tragen Sie das errechnete Ergebnis ein.",offen:"→ Schreiben Sie Ihre Antwort auf (Zettel oder Feld unten)."};
+function showT(){
+  const r=run,f=r.f,t=r.tasks[r.i],n=r.tasks.length;r.done=false;r.sel=[];
+  let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">${f.titel}<small>${f.lf} · Prüfungsfall</small></div></div>
+  <div class="prog" style="--c:${f.c}"><div class="bar"><i style="width:${r.i/n*100}%"></i></div><span>${FX.pill()} ${r.i+1}/${n}</span></div>`;
+  if(t.s)h+=`<div class="sit">${hl(t.s)}</div>`;
+  h+=`<div class="qcard" style="--c:${f.c}"><div class="lbl"><span>${r.i+1}. AUFGABE</span><span>${soll(t)} ${soll(t)===1?"PUNKT":"PUNKTE"}</span></div><h2>${hl(t.q)}</h2><div class="hint">${INSTR[t.t]}</div></div><div id="ans">`;
+  if(t.t==="ein"||t.t==="zwei"){
+    t.ord.forEach((oi,j)=>{h+=`<button class="opt" style="--c:${f.c}" data-j="${j}" onclick="pickT(${j})"><span class="l">${j+1}</span><span>${t.o[oi]}</span></button>`});
+    if(t.t==="zwei")h+=`<button id="chk" class="btn p wide" style="--c:${f.c}" disabled onclick="checkT()">Prüfen</button>`;
+  } else if(t.t==="zuord"){
+    h+=`<p class="legend">${t.kat.map((k,i)=>`<b>${ABC[i]}</b> = ${k}`).join(" · ")}</p>`;
+    t.rows.forEach((ri,j)=>{h+=`<div class="row" id="r${j}"><span>${t.items[ri][0]}</span><select id="s${j}"><option value="">?</option>${t.kat.map((k,i)=>`<option value="${i}">${ABC[i]} · ${k.length>22?k.slice(0,20)+"…":k}</option>`).join("")}</select></div>`});
+    h+=`<button class="btn p wide" style="--c:${f.c}" onclick="checkT()">Prüfen</button>`;
+  } else if(t.t==="reihe"){
+    t.rows.forEach((ri,j)=>{h+=`<div class="row" id="r${j}"><span>${t.items[ri]}</span><select id="s${j}"><option value="">?</option>${t.items.map((_,i)=>`<option value="${i}">${i+1}</option>`).join("")}</select></div>`});
+    h+=`<button class="btn p wide" style="--c:${f.c}" onclick="checkT()">Prüfen</button>`;
+  } else if(t.t==="rech"){
+    h+=`<div class="inp"><input id="num" inputmode="decimal" placeholder="0,00" autocomplete="off"><b>${t.unit}</b></div>
+    <button class="btn p wide" style="--c:${f.c}" onclick="checkT()">Prüfen</button>`;
+  } else {
+    h+=`<textarea id="txt" placeholder="Deine Antwort (bleibt nur hier, wird nicht gespeichert)"></textarea>
+    <button class="btn p wide" style="--c:${f.c}" onclick="checkT()">Musterlösung zeigen</button>`;
+  }
+  h+=`</div><div id="after"></div>`;
+  $.innerHTML=h;scrollTo(0,0);
+  FX.bar(document.querySelector(".prog .bar i"),Math.max(0,r.i-1)/n*100,r.i/n*100);
+}
+function pickT(j){
+  const r=run,t=r.tasks[r.i];if(r.done)return;
+  if(t.t==="ein"){r.sel=[j];return checkT()}
+  const k=r.sel.indexOf(j);if(k>=0)r.sel.splice(k,1);else if(r.sel.length<2)r.sel.push(j);
+  document.querySelectorAll(".opt").forEach((b,i)=>b.classList.toggle("sel",r.sel.includes(i)));
+  document.getElementById("chk").disabled=r.sel.length!==2;
+}
+function num(s){s=String(s).replace(/[\s€%]/g,"");if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");return parseFloat(s)}
+const eur=x=>x.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2});
+function checkT(){
+  const r=run,f=r.f,t=r.tasks[r.i];if(r.done)return;
+  let pts=0,fb="";
+  if(t.t==="ein"||t.t==="zwei"){
+    const right=t.ord.map((oi,j)=>t.a.includes(oi)?j:-1).filter(j=>j>=0);
+    document.querySelectorAll(".opt").forEach((b,j)=>{b.classList.remove("sel");if(right.includes(j))b.classList.add("ok");else if(r.sel.includes(j))b.classList.add("bad");else b.classList.add("dim")});
+    pts=r.sel.filter(j=>right.includes(j)).length;
+    fb=pts===soll(t)?"✓ Richtig!":`✗ ${pts?"Teilweise richtig.":"Leider falsch."} Richtig: ${right.map(j=>j+1).join(" und ")}`;
+  } else if(t.t==="zuord"||t.t==="reihe"){
+    t.rows.forEach((ri,j)=>{
+      const v=document.getElementById("s"+j).value, want=t.t==="zuord"?t.items[ri][1]:ri, ok=v!==""&&+v===want, row=document.getElementById("r"+j);
+      if(ok)pts++;row.classList.add(ok?"ok":"bad");document.getElementById("s"+j).disabled=true;
+      if(!ok)row.querySelector("span").insertAdjacentHTML("beforeend",`<small>richtig: ${t.t==="zuord"?ABC[want]+" · "+t.kat[want]:want+1}</small>`);
+    });
+    fb=pts===soll(t)?"✓ Alles richtig!":`${pts} von ${soll(t)} richtig`;
+  } else if(t.t==="rech"){
+    const v=num(document.getElementById("num").value),ok=Math.abs(v-t.a)<0.011;
+    document.getElementById("num").disabled=true;pts=ok?t.p:0;
+    fb=(ok?"✓ Richtig!":`✗ Richtig ist: ${eur(t.a)} ${t.unit}`)+`</b><div style="margin:4px 0 6px"><b style="display:inline">Rechenweg:</b> ${t.weg}</div><b style="display:none">`;
+  } else {
+    document.getElementById("txt").disabled=true;
+    document.getElementById("ans").querySelector("button").remove();
+    document.getElementById("after").innerHTML=`<div class="fb neu"><b>Musterlösung</b><ul>${t.l.map(x=>`<li>${x}</li>`).join("")}</ul>${t.w}
+    <div style="margin-top:10px;font-weight:600">Wie viele Punkte gibst du dir ehrlich?</div>
+    <div class="pts" style="--c:${f.c}">${Array.from({length:t.p+1},(_,i)=>`<button onclick="rate(${i},this)">${i}</button>`).join("")}</div></div><div id="nx"></div>`;
+    r.done=true;document.getElementById("after").scrollIntoView({behavior:"smooth",block:"nearest"});return;
+  }
+  r.done=true;r.ist[r.i]=pts;
+  const full=pts===soll(t);
+  {const tg=document.getElementById("ans");full?FX.ok(tg):pts?FX.part():FX.bad(tg)}
+  document.getElementById("after").innerHTML=`<div class="fb ${full?"ok":"bad"}"><b>${fb}</b>${t.w}<div style="margin-top:6px;font-size:13px;opacity:.8">${pts} / ${soll(t)} Punkte</div></div>${nextBtn()}`;
+  document.getElementById("after").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function rate(i,el){run.ist[run.i]=i;{const t=run.tasks[run.i];i===t.p?FX.ok(el):i?FX.part():FX.bad(el)}el.parentNode.querySelectorAll("button").forEach(b=>b.classList.toggle("sel",b===el));document.getElementById("nx").innerHTML=nextBtn()}
+function nextBtn(){const last=run.i===run.tasks.length-1;return `<button class="btn p wide" style="--c:${run.f.c}" onclick="nextT()">${last?"Auswertung ansehen":"Weiter →"}</button>`}
+function nextT(){run.i++;if(run.i<run.tasks.length)showT();else resultFall()}
+function resultFall(){
+  const r=run,f=r.f,sollSum=r.tasks.reduce((n,t)=>n+soll(t),0),ist=r.ist.reduce((n,x)=>n+(x||0),0),p=Math.round(ist/sollSum*1000)/10,pr=Math.round(p);
+  S.best[f.key]=Math.max(S.best[f.key]||0,pr);S.runs++;save();
+  const note=p>=92?"sehr gut":p>=81?"gut":p>=67?"befriedigend":p>=50?"ausreichend":p>=30?"mangelhaft":"ungenügend";
+  let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">${f.titel}<small>Auswertung</small></div></div>
+  <div class="res"><div class="ring" style="--c:${f.c};--p:${pr}"><div>${pr}%</div></div><h2>${p>=50?"Bestanden! 🎉":"Noch nicht ganz 🌱"}</h2><p class="sub">${ist} von ${sollSum} Punkten (${String(p).replace(".",",")} %) · ca. „${note}“</p></div>
+  <table class="soll"><tr><th>Aufgabe</th><th style="text-align:right">Ist / Soll</th></tr>${r.tasks.map((t,i)=>`<tr><td>${i+1}. ${t.q.replace(/<[^>]+>/g," ").slice(0,48)}…</td><td class="n" style="color:${(r.ist[i]||0)===soll(t)?"var(--ok)":"var(--bad)"}">${r.ist[i]||0} / ${soll(t)}</td></tr>`).join("")}</table>
+  <p class="sub" style="margin-top:10px">Notengrenzen nur als Orientierung (übliche 100-Punkte-Skala der Kammern).</p>
+  <div class="btns"><button class="btn" onclick="home()">Übersicht</button><button class="btn p" style="--c:${f.c}" onclick="startFall('${f.key}')">Nochmal</button></div>`;
+  $.innerHTML=h;scrollTo(0,0);
+  FX.count(document.querySelector(".ring div"),pr,"%");if(p>=50)FX.confetti(p>=80?60:28);
+}
+home();
+</script>
+</body>
+</html>
