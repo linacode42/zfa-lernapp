@@ -84,7 +84,7 @@ let quiz=null, confirmReset=false;
 function home(){
   const wrongN=Object.keys(S.wrong).length;
   const pct=S.done?Math.round(S.right/S.done*100):0;
-  let h=`<div style="display:flex;justify-content:space-between;font-size:14px"><a href="index.html" style="color:var(--mut);text-decoration:none">‹ Startseite</a><a href="patienten.html" style="color:var(--mut);text-decoration:none">Patienten betreuen ›</a></div><h1>Karies- & Füllungstherapie</h1><p class="sub">LF 4 + 5, jeden Tag 1 %</p>
+  let h=`<div style="display:flex;justify-content:space-between;font-size:14px"><a href="index.html" style="color:var(--mut);text-decoration:none">‹ Startseite</a><a href="patienten.html" style="color:var(--mut);text-decoration:none">Patienten betreuen ›</a></div><a href="pruefung.html" style="display:block;margin:10px 0 4px;padding:10px 14px;border-radius:14px;background:var(--card);color:var(--ink);text-decoration:none;font-size:14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">📝 <b>Prüfung üben</b>: Aufgaben im Kammer-Stil ›</a><h1>Karies- & Füllungstherapie</h1><p class="sub">LF 4 + 5, jeden Tag 1 %</p>
   <div class="stats"><div class="stat"><b>${S.done}</b><span>beantwortet</span></div>
   <div class="stat"><b>${pct}%</b><span>richtig</span></div>
   <div class="stat"><b>${wrongN}</b><span>zum Üben</span></div></div>
