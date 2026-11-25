@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem("zfaLF_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <title>Wirtschaft für ZFA: Lern-App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -85,12 +86,12 @@ th{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut
 /* calc */
 .calc-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:.95rem}
 .calc-line.sum{font-weight:700;border-bottom:2px solid var(--ink)}
-input.num{width:100%;font:inherit;font-size:1.2rem;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:#fff}
+input.num{width:100%;font:inherit;font-size:1.2rem;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
 input.num:focus{outline:none;border-color:var(--teal)}
 label.lbl{font-weight:600;display:block;margin:10px 0 6px}
 
 /* nav */
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--nav,rgba(255,255,255,.96));backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
 nav.tabs .in{display:flex;max-width:680px;width:100%}
 nav.tabs button{flex:1;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;color:var(--muted);font-weight:600}
 nav.tabs button .i{font-size:1.3rem;line-height:1}
@@ -101,25 +102,45 @@ nav.tabs button.on{color:var(--teal)}
 .stat span{font-size:.75rem;color:var(--muted)}
 .fade{animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* ---- FX: leichte Belohnungs-Animationen (nur transform/opacity) ---- */
+/* ---- FX: leichte Belohnungs-Animationen (nur transform/opacity) + Hell/Dunkel-Schalter ---- */
 @property --p{syntax:'<number>';inherits:true;initial-value:0}
-@keyframes fxPop{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}
-@keyframes fxShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
-@keyframes fxUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes fxFloat{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
-@keyframes fxBump{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+:root{color-scheme:light;--fx-bub:#fff;--fx-tx:0px;--fx-ico:"☀️";--fx-tbg:#dbe7f3}
+@keyframes fxPop{0%{transform:scale(1)}35%{transform:scale(1.05)}65%{transform:scale(.99)}100%{transform:scale(1)}}
+@keyframes fxShake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px) rotate(-.6deg)}35%{transform:translateX(7px) rotate(.5deg)}55%{transform:translateX(-5px)}75%{transform:translateX(3px)}}
+@keyframes fxUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fxFloat{0%{opacity:0;transform:translate(-50%,8px) scale(.6)}16%{opacity:1;transform:translate(-50%,-8px) scale(1.1)}26%{transform:translate(-50%,-10px) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-64px) scale(.96)}}
+@keyframes fxBump{0%,100%{transform:scale(1)}50%{transform:scale(1.25) rotate(-4deg)}}
 @keyframes fxRing{from{--p:0}}
-.fx-pop{animation:fxPop .35s ease}
-.fx-shake{animation:fxShake .4s ease}
-.fx-float{position:fixed;left:50%;top:0;z-index:50;pointer-events:none;font-weight:800;font-size:22px;color:#15803d;background:#fff;padding:4px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12);white-space:nowrap;animation:fxFloat 1.05s ease-out forwards}
+@keyframes fxGlow{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.07,1.25)}}
+@keyframes fxToast{0%{opacity:0;transform:translate(-50%,-36px) scale(.7)}12%{opacity:1;transform:translate(-50%,0) scale(1.08)}20%{transform:translate(-50%,0) scale(1)}85%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-24px) scale(.95)}}
+@keyframes fxFlick{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.12)}}
+@keyframes fxBounce{0%{opacity:0;transform:translateY(24px) scale(.3)}60%{opacity:1;transform:translateY(-6px) scale(1.15)}80%{transform:translateY(2px) scale(.97)}100%{transform:none}}
+.fx-pop{animation:fxPop .42s cubic-bezier(.3,.7,.4,1.3)}
+.fx-shake{animation:fxShake .45s ease}
+.fx-glow{position:relative}
+.fx-glow:after{content:"";position:absolute;inset:-3px;border-radius:inherit;border:3px solid #22c55e;pointer-events:none;animation:fxGlow .6s ease-out forwards}
+.fx-float{position:fixed;left:50%;top:0;z-index:50;pointer-events:none;font-weight:800;font-size:20px;color:#15803d;background:var(--fx-bub);padding:5px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.14);white-space:nowrap;animation:fxFloat 1.15s ease-out forwards}
+.fx-float.no{color:#c2410c;font-size:17px}
+.fx-toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);z-index:70;pointer-events:none;background:linear-gradient(135deg,#f59e0b,#e2614b);color:#fff;font-weight:800;font-size:17px;padding:11px 20px;border-radius:999px;box-shadow:0 10px 28px rgba(226,97,75,.35);white-space:nowrap;animation:fxToast 2.2s cubic-bezier(.2,.9,.3,1.2) forwards}
 .fx-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:#fff1e6;color:#c2410c;font-weight:700;font-size:13px;vertical-align:middle}
 .fx-pill.bump{animation:fxBump .45s ease}
-.fx-conf{position:fixed;top:0;left:0;width:8px;height:13px;border-radius:2px;pointer-events:none;z-index:60;will-change:transform,opacity}
+.fx-pill .fl{display:inline-block;transform-origin:50% 85%;animation:fxFlick 1.7s ease-in-out infinite}
+.fx-conf{position:fixed;top:0;left:0;width:8px;height:12px;border-radius:2px;pointer-events:none;z-index:60;will-change:transform,opacity}
+.fx-conf.c{width:9px;height:9px;border-radius:50%}.fx-conf.r{width:4px;height:16px}
+.fx-conf.e{width:auto;height:auto;background:none!important;font-size:20px;line-height:1}
+.fx-emoji{display:inline-block;font-size:56px;line-height:1;margin-bottom:6px;animation:fxBounce .75s cubic-bezier(.2,.9,.3,1.3) both}
 .fx-in{animation:fxUp .28s ease both}
+.opt{animation:fxUp .34s cubic-bezier(.2,.8,.3,1.15) backwards}
+.opt:nth-child(2){animation-delay:.04s}.opt:nth-child(3){animation-delay:.08s}.opt:nth-child(4){animation-delay:.12s}.opt:nth-child(5){animation-delay:.16s}.opt:nth-child(6){animation-delay:.2s}
+.fx-theme{flex:none;position:relative;width:58px;height:32px;border-radius:999px;border:0;background:var(--fx-tbg);cursor:pointer;padding:0;box-shadow:inset 0 1px 3px rgba(0,0,0,.12)}
+.fx-theme .k{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px;box-shadow:0 1px 4px rgba(0,0,0,.25);transform:translateX(var(--fx-tx));transition:transform .28s cubic-bezier(.3,.7,.4,1.3)}
+.fx-theme .k:before{content:var(--fx-ico)}
 button{transition:transform .12s ease}
-button:active:not(:disabled){transform:scale(.97)}
+button:active:not(:disabled){transform:scale(.96)}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 .explain{animation:fxUp .3s ease both}
+:root[data-theme=dark]{--bg:#131719;--card:#1c2225;--ink:#e9eef0;--muted:#9aa7ad;--line:#2f383c;--teal:#12897b;--teal-soft:#173b37;--coral:#f07a64;--coral-soft:#3d2320;--gold:#e0a63a;--gold-soft:#3a3020;--ok:#3ccf74;--ok-soft:#163323;--bad:#f2735f;--bad-soft:#3d1f1c;--nav:rgba(19,23,25,.94);--fx-bub:#22302d;--fx-tx:26px;--fx-ico:"🌙";--fx-tbg:#2b3a55;color-scheme:dark}:root[data-theme=dark] .fx-pill{background:#3a2414;color:#fdba74}:root[data-theme=dark] .pill{color:#7fe0d3}:root[data-theme=dark] .chip.on{color:var(--bg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#131719;--card:#1c2225;--ink:#e9eef0;--muted:#9aa7ad;--line:#2f383c;--teal:#12897b;--teal-soft:#173b37;--coral:#f07a64;--coral-soft:#3d2320;--gold:#e0a63a;--gold-soft:#3a3020;--ok:#3ccf74;--ok-soft:#163323;--bad:#f2735f;--bad-soft:#3d1f1c;--nav:rgba(19,23,25,.94);--fx-bub:#22302d;--fx-tx:26px;--fx-ico:"🌙";--fx-tbg:#2b3a55;color-scheme:dark}:root:not([data-theme=light]) .fx-pill{background:#3a2414;color:#fdba74}:root:not([data-theme=light]) .pill{color:#7fe0d3}:root:not([data-theme=light]) .chip.on{color:var(--bg)}}
 </style>
 </head>
 <body>
@@ -127,31 +148,50 @@ button:active:not(:disabled){transform:scale(.97)}
 <nav class="tabs"><div class="in" id="tabs"></div></nav>
 
 <script>
-// ---------- FX: kleine Belohnungen fürs Gehirn (leicht, ohne Bibliothek)
+// ---------- FX: kleine Belohnungen fürs Gehirn (leicht, ohne Bibliothek) + Hell/Dunkel
 const FX=(()=>{
+ const R=document.documentElement,mq=matchMedia("(prefers-color-scheme: dark)");
  const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
- const LOB=["Super!","Stark!","Genau!","Klasse!","Weiter so!","Richtig gut!","Yes! 💪"];
+ const LOB=["Super! 🎉","Stark! 💪","Genau! ✨","Klasse! 🌟","Weiter so! 🚀","Richtig gut! 😍","Yes! 🙌","Volltreffer! 🎯","Wow! 🤩","Sitzt! 🦷"];
+ const FAST=["Knapp daneben 💪","Nicht schlimm 🙂","Gleich hast du's 🌱","Lies die Erklärung 🧠","Daraus lernst du ✨"];
+ const MILE={5:"🔥 5er-Serie! Du bist on fire!",10:"⚡ 10 in Folge! Unaufhaltsam!",15:"🏆 15 in Folge! Prüfungsreif!",20:"👑 20 in Folge! Legendär!",30:"🚀 30 in Folge! Wahnsinn!"};
+ const COLS=["#0f766e","#f59e0b","#e2614b","#6d28d9","#22c55e","#3b82f6","#ec4899"],EMO=["🎉","⭐","✨","🦷","💚","🌟"];
+ const rnd=a=>a[Math.random()*a.length|0];
  const re=(el,c)=>{if(!el||calm)return;el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};
  const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
- function float(txt,el){if(calm)return;const r=el?el.getBoundingClientRect():{top:innerHeight/2};const d=document.createElement("div");d.className="fx-float";d.textContent=txt;d.style.top=Math.max(24,r.top-12)+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+ const add=(cls,txt)=>{const d=document.createElement(cls==="fx-conf e"?"span":"i");d.className=cls;if(txt)d.textContent=txt;document.body.appendChild(d);return d};
+ function bubble(txt,el,no){if(calm)return;const r=el?el.getBoundingClientRect():{top:innerHeight/2};const d=add("fx-float"+(no?" no":""),txt);d.style.top=Math.min(innerHeight-60,Math.max(24,r.top-14))+"px";setTimeout(()=>d.remove(),1200)}
+ function sparks(el,n){if(calm||!el||!el.animate)return;const r=el.getBoundingClientRect(),x=r.left+r.width*.82,y=r.top+r.height/2;
+  for(let i=0;i<n;i++){const d=add("fx-conf e",rnd(["✨","⭐","💚","🌟"]));const a=-Math.PI/2+(Math.random()-.5)*2.2,v=40+Math.random()*50;
+   d.animate([{transform:`translate(${x}px,${y}px) scale(.3)`,opacity:1},{transform:`translate(${x+Math.cos(a)*v}px,${y+Math.sin(a)*v}px) scale(1.1)`,opacity:1,offset:.6},{transform:`translate(${x+Math.cos(a)*v*1.3}px,${y+Math.sin(a)*v*1.3+12}px) scale(.6)`,opacity:0}],{duration:650+Math.random()*250,easing:"ease-out"}).onfinish=()=>d.remove()}}
+ function toast(txt){if(calm)return;const d=add("fx-toast",txt);setTimeout(()=>d.remove(),2300)}
+ // Konfetti: "burst" aus der Mitte oder "cannons" aus beiden unteren Ecken
+ function confetti(n,mode){if(calm||!document.body.animate)return;const W=innerWidth,H=innerHeight;
+  for(let i=0;i<n;i++){const k=i%7,d=k===6?add("fx-conf e",rnd(EMO)):add("fx-conf"+(k===1||k===4?" c":k===2?" r":""));if(k!==6)d.style.background=COLS[i%COLS.length];
+   let x,y,dx,dy;if(mode==="cannons"){const l=i%2===0;x=l?-10:W+10;y=H*.92;dx=(l?1:-1)*(W*.25+Math.random()*W*.45);dy=-(H*.45+Math.random()*H*.35)}
+   else{x=W/2;y=H*.32;const a=Math.random()*Math.PI*2,v=80+Math.random()*190;dx=Math.cos(a)*v;dy=Math.sin(a)*v*.6-150}
+   const r=Math.random()*900-450,f=Math.random()*360;
+   d.animate([{transform:`translate(${x}px,${y}px) rotate(0deg) rotateY(0deg)`,opacity:1},{transform:`translate(${x+dx*.75}px,${y+dy}px) rotate(${r*.5}deg) rotateY(${f}deg)`,opacity:1,offset:.4},{transform:`translate(${x+dx}px,${y+dy+H*.85}px) rotate(${r}deg) rotateY(${f*3}deg)`,opacity:0}],{duration:1500+Math.random()*900,delay:Math.random()*120,easing:"cubic-bezier(.2,.65,.45,1)"}).onfinish=()=>d.remove()}}
  let streak=0;
  // Lerntage in Folge (gemeinsam für alle Seiten)
- const DK="zfaLF_tage",today=()=>new Date().toISOString().slice(0,10);
+ const DK="zfaLF_tage",dstr=t=>new Date(t).toISOString().slice(0,10),today=()=>dstr(Date.now()),yest=()=>dstr(Date.now()-864e5);
  const getD=()=>{try{return JSON.parse(localStorage.getItem(DK))||{n:0,last:""}}catch(e){return{n:0,last:""}}};
- function day(){const d=getD(),t=today();if(d.last===t)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);d.n=d.last===y?d.n+1:1;d.last=t;try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){}}
- function dayPill(){const d=getD(),y=new Date(Date.now()-864e5).toISOString().slice(0,10);const n=(d.last===today()||d.last===y)?d.n:0;return n?`<span class="fx-pill" title="Lerntage in Folge">🔥 ${n} ${n===1?"Tag":"Tage"} in Folge</span>`:`<span class="fx-pill">🔥 Heute starten!</span>`}
+ function day(){const d=getD(),t=today();if(d.last===t)return;d.n=d.last===yest()?d.n+1:1;d.last=t;try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){}}
+ function dayPill(){const d=getD(),n=(d.last===today()||d.last===yest())?d.n:0;return n?`<span class="fx-pill" title="Lerntage in Folge"><span class="fl">🔥</span> ${n} ${n===1?"Tag":"Tage"} in Folge</span>`:`<span class="fx-pill"><span class="fl">🔥</span> Heute starten!</span>`}
+ // Hell/Dunkel: Standard = Einstellung des Handys/Browsers, Schalter überschreibt das
+ function toggle(btn){const dark=R.dataset.theme?R.dataset.theme==="dark":mq.matches,t=dark?"light":"dark";R.dataset.theme=t;try{localStorage.setItem("zfaLF_theme",t)}catch(e){}re(btn,"fx-pop");buzz(8)}
  return{
-  ok(el){streak++;day();re(el,"fx-pop");float(streak>=3?"🔥 "+streak+" in Folge!":LOB[Math.random()*LOB.length|0],el);buzz(12)},
-  bad(el){streak=0;day();re(el,"fx-shake");buzz([25,40,25])},
-  part(){streak=0;day()},
+  ok(el){streak++;day();re(el,"fx-pop");re(el,"fx-glow");sparks(el,4);const m=MILE[streak];
+   if(m){toast(m);confetti(42,"burst");buzz([15,40,15])}else{bubble(streak>=3?"🔥 "+streak+" in Folge!":rnd(LOB),el);buzz(12)}},
+  bad(el){streak=0;day();re(el,"fx-shake");bubble(rnd(FAST),el,1);buzz([25,40,25])},
+  part(el){streak=0;day();if(el)bubble("Teilweise richtig 👍",el,1)},
   reset(){streak=0},
   get streak(){return streak},
   pill(){return streak>=2?`<span class="fx-pill bump">🔥 ${streak}</span>`:""},
-  dayPill,
-  confetti(n){if(calm||!document.body.animate)return;const cs=["#0f766e","#f59e0b","#e2614b","#6d28d9","#22c55e","#3b82f6"],x=innerWidth/2,y=innerHeight*.3;
-   for(let i=0;i<n;i++){const d=document.createElement("i");d.className="fx-conf";d.style.background=cs[i%cs.length];document.body.appendChild(d);
-    const a=Math.random()*Math.PI*2,v=90+Math.random()*200,dx=Math.cos(a)*v,dy=Math.sin(a)*v*.6-170,r=Math.random()*900-450;
-    d.animate([{transform:`translate(${x}px,${y}px) rotate(0deg)`,opacity:1},{transform:`translate(${x+dx*.7}px,${y+dy}px) rotate(${r*.5}deg)`,opacity:1,offset:.35},{transform:`translate(${x+dx}px,${y+dy+innerHeight*.6}px) rotate(${r}deg)`,opacity:0}],{duration:1300+Math.random()*700,easing:"cubic-bezier(.25,.6,.45,1)"}).onfinish=()=>d.remove()}},
+  dayPill,confetti,toast,toggle,
+  themeBtn(){return `<button class="fx-theme" onclick="FX.toggle(this)" aria-label="Hell oder dunkel umschalten" title="Hell / Dunkel"><span class="k"></span></button>`},
+  emoji(p){return `<div class="fx-emoji">${p===100?"🏆":p>=80?"🌟":p>=50?"💪":"🌱"}</div>`},
+  win(p){document.querySelectorAll(".fx-float").forEach(e=>e.remove());if(p===100){toast("👑 Perfekt! Alles richtig!");confetti(70,"cannons");setTimeout(()=>confetti(36,"burst"),400)}else if(p>=80)confetti(64,"cannons");else if(p>=50)confetti(32,"burst")},
   count(el,to,suf){if(!el)return;if(calm){el.textContent=to+suf;return}const t0=performance.now(),D=900;const st=t=>{const k=Math.min(1,(t-t0)/D);el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)},
   bar(el,from,to){if(!el||calm)return;el.style.width=from+"%";requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=to+"%"}))}
  }})();
@@ -545,7 +585,7 @@ function viewLernen(){
  const known=Object.values(S.known).filter(Boolean).length;
  const allCards=TOPICS.reduce((s,t)=>s+t.cards.length,0);
  app.innerHTML=`<div class="fade">
- <header class="top"><div><span class="pill">ZFA · Wirtschaft</span><h1 style="margin-top:8px">Hey Lina! 👋</h1><div class="sub">Alle Prüfungsthemen, Schritt für Schritt.</div><div style="margin-top:6px">${FX.dayPill()}</div></div></header>
+ <header class="top"><div><span class="pill">ZFA · Wirtschaft</span><h1 style="margin-top:8px">Hey Lina! 👋</h1><div class="sub">Alle Prüfungsthemen, Schritt für Schritt.</div><div style="margin-top:6px">${FX.dayPill()}</div></div>${FX.themeBtn()}</header>
  <div class="stats">
   <div class="stat"><b>${total}%</b><span>Fortschritt</span></div>
   <div class="stat"><b>${known}/${allCards}</b><span>Karten gewusst</span></div>
@@ -597,7 +637,7 @@ function drawCard(){
  if($("#flip"))$("#flip").onclick=()=>$("#flip").classList.toggle("turned");
  if($("#yes"))$("#yes").onclick=()=>{FX.ok($("#yes"));S.known[c.id]=true;save();di++;drawCard()};
  if($("#no"))$("#no").onclick=()=>{S.known[c.id]=false;save();deck.push(c);di++;drawCard()};
- if($("#again"))$("#again").onclick=viewKarten;
+ if($("#again")){$("#again").onclick=viewKarten;FX.confetti(36,"burst")}
  if($("#resetUnknown"))$("#resetUnknown").onclick=()=>{onlyUnknown=false;viewKarten()};
 }
 
@@ -622,12 +662,12 @@ function viewQuiz(){
   const n=Q.qs.length,p=Math.round(Q.score/n*100);
   if(S.quizFilter!=="alle"){S.best[S.quizFilter]=Math.max(S.best[S.quizFilter]||0,Q.score);save()}
   const msg=p>=90?"Hervorragend! Das sitzt. 🌟":p>=70?"Gut gemacht! Fast alles drin. 💪":p>=50?"Solide Basis. Schau dir die Fehler nochmal an. 📖":"Lies das Thema nochmal in Ruhe, dann klappt's. 🙂";
-  app.innerHTML=`<div class="fade"><div class="card" style="text-align:center"><h2>Ergebnis</h2><div class="big">${Q.score}/${n}</div><p>${msg}</p></div>
+  app.innerHTML=`<div class="fade"><div class="card" style="text-align:center"><h2>Ergebnis</h2>${FX.emoji(p)}<div class="big">${Q.score}/${n}</div><p>${msg}</p></div>
   ${Q.wrong.length?`<h3>Das solltest du wiederholen:</h3>${Q.wrong.map(w=>`<div class="card"><b>${w.q}</b><div class="explain ok" style="margin-top:8px">✓ ${w.o[w.a]}<br><span class="muted">${w.w}</span></div></div>`).join("")}`:""}
   <div class="row"><button class="btn alt" id="qback">Übersicht</button><button class="btn" id="qagain">Nochmal</button></div></div>`;
   $("#qback").onclick=()=>{Q=null;render()};
   $("#qagain").onclick=()=>startQuiz(S.quizFilter);
-  if(p>=50)FX.confetti(p>=80?60:28);
+  FX.win(p);
   return;
  }
  const q=Q.qs[Q.i];
@@ -654,6 +694,7 @@ function viewFaelle(){
  if(F.i>=F.cs.length){
   app.innerHTML=`<div class="fade"><div class="card" style="text-align:center"><h2>Alle Fälle gelöst</h2><div class="big">${F.score}/${F.cs.length}</div><p>${F.score>=F.cs.length-1?"Geschäftsfähigkeit sitzt! 🎉":"Schau dir die Prüfungsfallen im Thema Geschäftsfähigkeit nochmal an."}</p><button class="btn full" id="fa">Nochmal (neu gemischt)</button></div></div>`;
   $("#fa").onclick=()=>{F=null;render()};
+  FX.win(Math.round(F.score/F.cs.length*100));
   return;
  }
  const c=F.cs[F.i];
@@ -739,7 +780,7 @@ function viewRechnen(){
   const ok=Math.abs(v-target)<=0.05;
   $("#fb").innerHTML=ok?`<div class="explain ok"><b>Richtig!</b> ${eur(target)} 🎉</div>`:`<div class="explain no"><b>Noch nicht.</b> Prüf nochmal: Kirchensteuer von der Lohnsteuer, Pflege-Zuschlag nur kinderlos ab 23${R.vl?", VL erst nach dem Netto abziehen":""}.</div>`;
   ok?FX.ok($("#chk")):FX.bad($("#inp"));
-  if(ok){showSteps();FX.confetti(40)}
+  if(ok){showSteps();FX.confetti(56,"cannons")}
  };
  $("#sol").onclick=showSteps;
  $("#nw").onclick=()=>{newCalc();render();scrollTo(0,0)};
