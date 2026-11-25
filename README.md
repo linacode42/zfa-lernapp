@@ -31,7 +31,7 @@ Der Lernfortschritt wird im Browser auf dem jeweiligen Gerät gespeichert.
 Die App wird automatisch veröffentlicht (Datei `.github/workflows/pages.yml`), sobald sich etwas auf `main` ändert.
 Einstellung dafür: **Settings → Pages → Source: GitHub Actions**.
 
-Adresse: `https://linaalp.github.io/ZFA-lern-app/`
+Adresse: https://linacode42.github.io/zfa-lernapp/
 
 ## Wichtig
 
