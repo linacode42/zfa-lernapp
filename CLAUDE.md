@@ -8,7 +8,8 @@ Lern-App für Lina (Ausbildung Zahnmedizinische Fachangestellte). Lina ist keine
 - Muss per Doppelklick und über GitHub Pages laufen. Kein Framework einführen, ohne zu fragen.
 - Mobile-first: Lina lernt hauptsächlich am Handy.
 - Inhalte liegen als Daten im Script: `TOPICS` (learn/cards/quiz), `CASES`, `RATES`; in `pruefung.html` `OPQ` und `FAELLE`. Neue Themen dort ergänzen, die Views bauen sich daraus.
-- Fortschritt in `localStorage` (Präfix `zfaWi_` bzw. `zfaLF_`), immer in try/catch.
+- Animationen: Baustein `FX` (CSS + JS, in jeder Datei gleich, oben im Script). Nur `transform`/`opacity` animieren, keine Bibliotheken, `prefers-reduced-motion` respektieren. Änderungen daran in allen Dateien gleich machen.
+- Fortschritt in `localStorage` (Präfix `zfaWi_` bzw. `zfaLF_`), immer in try/catch. Lerntage in Folge: `zfaLF_tage` (gemeinsam für alle Seiten).
 
 ## Inhaltliche Regeln
 

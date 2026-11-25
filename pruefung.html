@@ -86,11 +86,59 @@ table.soll td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:n
 .nav{display:flex;justify-content:space-between;font-size:14px}
 .nav a{color:var(--mut);text-decoration:none}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1514;--card:#19211f;--ink:#e8efed;--mut:#9aa8a5;--line:#2b3633;--okb:#12301f;--badb:#3a1d10;--mark:#5b4a10;--sit:#16213a;--sitb:#8fb0ff}.fb.ok{color:#a7e3bd}.fb.bad{color:#f7c2a6}.box.why{background:#16213a}}
+/* ---- FX: leichte Belohnungs-Animationen (nur transform/opacity) ---- */
+@property --p{syntax:'<number>';inherits:true;initial-value:0}
+@keyframes fxPop{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}
+@keyframes fxShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+@keyframes fxUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fxFloat{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
+@keyframes fxBump{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+@keyframes fxRing{from{--p:0}}
+.fx-pop{animation:fxPop .35s ease}
+.fx-shake{animation:fxShake .4s ease}
+.fx-float{position:fixed;left:50%;top:0;z-index:50;pointer-events:none;font-weight:800;font-size:22px;color:#15803d;background:#fff;padding:4px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12);white-space:nowrap;animation:fxFloat 1.05s ease-out forwards}
+.fx-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:#fff1e6;color:#c2410c;font-weight:700;font-size:13px;vertical-align:middle}
+.fx-pill.bump{animation:fxBump .45s ease}
+.fx-conf{position:fixed;top:0;left:0;width:8px;height:13px;border-radius:2px;pointer-events:none;z-index:60;will-change:transform,opacity}
+.fx-in{animation:fxUp .28s ease both}
+button{transition:transform .12s ease}
+button:active:not(:disabled){transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.fb{animation:fxUp .3s ease both}
+.ring{animation:fxRing 1s cubic-bezier(.3,.7,.4,1)}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+// ---------- FX: kleine Belohnungen fürs Gehirn (leicht, ohne Bibliothek)
+const FX=(()=>{
+ const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const LOB=["Super!","Stark!","Genau!","Klasse!","Weiter so!","Richtig gut!","Yes! 💪"];
+ const re=(el,c)=>{if(!el||calm)return;el.classList.remove(c);void el.offsetWidth;el.classList.add(c)};
+ const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+ function float(txt,el){if(calm)return;const r=el?el.getBoundingClientRect():{top:innerHeight/2};const d=document.createElement("div");d.className="fx-float";d.textContent=txt;d.style.top=Math.max(24,r.top-12)+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+ let streak=0;
+ // Lerntage in Folge (gemeinsam für alle Seiten)
+ const DK="zfaLF_tage",today=()=>new Date().toISOString().slice(0,10);
+ const getD=()=>{try{return JSON.parse(localStorage.getItem(DK))||{n:0,last:""}}catch(e){return{n:0,last:""}}};
+ function day(){const d=getD(),t=today();if(d.last===t)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);d.n=d.last===y?d.n+1:1;d.last=t;try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){}}
+ function dayPill(){const d=getD(),y=new Date(Date.now()-864e5).toISOString().slice(0,10);const n=(d.last===today()||d.last===y)?d.n:0;return n?`<span class="fx-pill" title="Lerntage in Folge">🔥 ${n} ${n===1?"Tag":"Tage"} in Folge</span>`:`<span class="fx-pill">🔥 Heute starten!</span>`}
+ return{
+  ok(el){streak++;day();re(el,"fx-pop");float(streak>=3?"🔥 "+streak+" in Folge!":LOB[Math.random()*LOB.length|0],el);buzz(12)},
+  bad(el){streak=0;day();re(el,"fx-shake");buzz([25,40,25])},
+  part(){streak=0;day()},
+  reset(){streak=0},
+  get streak(){return streak},
+  pill(){return streak>=2?`<span class="fx-pill bump">🔥 ${streak}</span>`:""},
+  dayPill,
+  confetti(n){if(calm||!document.body.animate)return;const cs=["#0f766e","#f59e0b","#e2614b","#6d28d9","#22c55e","#3b82f6"],x=innerWidth/2,y=innerHeight*.3;
+   for(let i=0;i<n;i++){const d=document.createElement("i");d.className="fx-conf";d.style.background=cs[i%cs.length];document.body.appendChild(d);
+    const a=Math.random()*Math.PI*2,v=90+Math.random()*200,dx=Math.cos(a)*v,dy=Math.sin(a)*v*.6-170,r=Math.random()*900-450;
+    d.animate([{transform:`translate(${x}px,${y}px) rotate(0deg)`,opacity:1},{transform:`translate(${x+dx*.7}px,${y+dy}px) rotate(${r*.5}deg)`,opacity:1,offset:.35},{transform:`translate(${x+dx}px,${y+dy+innerHeight*.6}px) rotate(${r}deg)`,opacity:0}],{duration:1300+Math.random()*700,easing:"cubic-bezier(.25,.6,.45,1)"}).onfinish=()=>d.remove()}},
+  count(el,to,suf){if(!el)return;if(calm){el.textContent=to+suf;return}const t0=performance.now(),D=900;const st=t=>{const k=Math.min(1,(t-t0)/D);el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)},
+  bar(el,from,to){if(!el||calm)return;el.style.width=from+"%";requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=to+"%"}))}
+ }})();
 // Eigene Übungsaufgaben im Stil der schriftlichen ZFA-Prüfungen der Zahnärztekammer Niedersachsen
 // (Situationsbeschreibung, Operatoren wie "Nennen Sie 3", Antwortoptionen 1 bis 5, Zuordnungen, Rechenaufgaben).
 // Es sind KEINE Originalaufgaben der Kammer.
@@ -221,7 +269,7 @@ function hl(s){if(!S.hl)return s;return s.split(/(<[^>]+>)/).map(p=>p.startsWith
 function home(){
   const total=FAELLE.reduce((n,f)=>n+f.a.length,0);
   let h=`<div class="nav"><a href="index.html">‹ Startseite</a><a href="patienten.html">Fachkunde-Quiz ›</a></div>
-  <h1>Prüfung üben</h1><p class="sub">Aufgaben im Stil der Kammerprüfung Niedersachsen</p>
+  <h1>Prüfung üben</h1><p class="sub">Aufgaben im Stil der Kammerprüfung Niedersachsen &nbsp;${FX.dayPill()}</p>
   <div class="box why"><b class="h">💡 Warum das hilft</b>In der Prüfung weißt du oft mehr, als du Punkte bekommst. Punkte gehen verloren, weil man unter Stress die Aufgabe falsch liest: „Nennen“ statt „Erläutern“, das NICHT überlesen, Abkürzungen trotz „keine Abkürzungen“. Hier übst du genau das.</div>
   <h3 class="sec">1 · Aufgaben verstehen</h3>
   <div class="lf" style="--c:#0f766e"><div class="tag">OPERATOREN & SIGNALWÖRTER</div><h3>Was will die Aufgabe von mir?</h3>
@@ -253,11 +301,11 @@ function ops(){
 
 // ---------- Operatoren-Training (Multiple Choice)
 let oq=null;
-function opQuiz(){oq={qs:shuffle(OPQ).map(q=>({q,opts:shuffle([q[1],...q[2]])})),i:0,right:0,answered:false};showOp()}
+function opQuiz(){FX.reset();oq={qs:shuffle(OPQ).map(q=>({q,opts:shuffle([q[1],...q[2]])})),i:0,right:0,answered:false};showOp()}
 function showOp(){
   const z=oq,x=z.qs[z.i],n=z.qs.length;
   let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">Aufgaben verstehen</div></div>
-  <div class="prog" style="--c:#0f766e"><div class="bar"><i style="width:${z.i/n*100}%"></i></div><span>${z.i+1}/${n}</span></div>
+  <div class="prog" style="--c:#0f766e"><div class="bar"><i style="width:${z.i/n*100}%"></i></div><span>${FX.pill()} ${z.i+1}/${n}</span></div>
   <div class="qcard" style="--c:#0f766e"><div class="lbl"><span>FRAGE ${z.i+1}</span></div><h2>${hl(x.q[0])}</h2></div>`;
   x.opts.forEach((o,j)=>{h+=`<button class="opt" onclick="pickOp(${j})"><span class="l">${j+1}</span><span>${o}</span></button>`});
   h+=`<div id="after"></div>`;$.innerHTML=h;scrollTo(0,0);
@@ -265,6 +313,7 @@ function showOp(){
 function pickOp(j){
   const z=oq;if(z.answered)return;z.answered=true;const x=z.qs[z.i],ok=x.opts[j]===x.q[1];
   document.querySelectorAll(".opt").forEach((b,k)=>{if(x.opts[k]===x.q[1])b.classList.add("ok");else if(k===j)b.classList.add("bad");else b.classList.add("dim")});
+  {const bt=document.querySelectorAll(".opt")[j];ok?FX.ok(bt):FX.bad(bt)}
   if(ok)z.right++;
   const last=z.i===z.qs.length-1;
   document.getElementById("after").innerHTML=`<div class="fb ${ok?"ok":"bad"}"><b>${ok?"✓ Richtig!":"✗ Nicht ganz."}</b>${x.q[3]}</div>
@@ -275,12 +324,13 @@ function nextOp(){const z=oq;z.answered=false;z.i++;if(z.i<z.qs.length)return sh
   const n=z.qs.length,p=Math.round(z.right/n*100);S.op=Math.max(S.op,z.right);save();
   $.innerHTML=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">Aufgaben verstehen</div></div>
   <div class="res"><div class="ring" style="--c:#0f766e;--p:${p}"><div>${p}%</div></div><h2>${p>=80?"Du liest wie ein Profi! 💪":"Dranbleiben, das wird 🌱"}</h2><p class="sub">${z.right} von ${n} richtig</p></div>
-  <div class="btns"><button class="btn" onclick="home()">Startseite</button><button class="btn p" style="--c:#0f766e" onclick="opQuiz()">Nochmal</button></div>`;scrollTo(0,0)}
+  <div class="btns"><button class="btn" onclick="home()">Startseite</button><button class="btn p" style="--c:#0f766e" onclick="opQuiz()">Nochmal</button></div>`;scrollTo(0,0);
+  FX.count(document.querySelector(".ring div"),p,"%");if(p>=50)FX.confetti(p>=80?60:28)}
 
 // ---------- Prüfungsfall
 function startFall(k){
   const f=FAELLE.find(x=>x.key===k);
-  run={f,i:0,ist:[],sel:[],done:false,tasks:f.a.map(t=>({...t,
+  FX.reset();run={f,i:0,ist:[],sel:[],done:false,tasks:f.a.map(t=>({...t,
     ord:t.o?shuffle(t.o.map((_,i)=>i)):null,
     rows:t.items?shuffle(t.items.map((_,i)=>i)):null}))};
   let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">${f.titel}<small>${f.lf} · Prüfungsfall</small></div></div>
@@ -293,7 +343,7 @@ const INSTR={ein:"→ Tragen Sie die Zahl der richtigen Antwortoption ein.",zwei
 function showT(){
   const r=run,f=r.f,t=r.tasks[r.i],n=r.tasks.length;r.done=false;r.sel=[];
   let h=`<div class="top"><button class="back" onclick="home()">‹</button><div class="t">${f.titel}<small>${f.lf} · Prüfungsfall</small></div></div>
-  <div class="prog" style="--c:${f.c}"><div class="bar"><i style="width:${r.i/n*100}%"></i></div><span>${r.i+1}/${n}</span></div>`;
+  <div class="prog" style="--c:${f.c}"><div class="bar"><i style="width:${r.i/n*100}%"></i></div><span>${FX.pill()} ${r.i+1}/${n}</span></div>`;
   if(t.s)h+=`<div class="sit">${hl(t.s)}</div>`;
   h+=`<div class="qcard" style="--c:${f.c}"><div class="lbl"><span>${r.i+1}. AUFGABE</span><span>${soll(t)} ${soll(t)===1?"PUNKT":"PUNKTE"}</span></div><h2>${hl(t.q)}</h2><div class="hint">${INSTR[t.t]}</div></div><div id="ans">`;
   if(t.t==="ein"||t.t==="zwei"){
@@ -315,6 +365,7 @@ function showT(){
   }
   h+=`</div><div id="after"></div>`;
   $.innerHTML=h;scrollTo(0,0);
+  FX.bar(document.querySelector(".prog .bar i"),Math.max(0,r.i-1)/n*100,r.i/n*100);
 }
 function pickT(j){
   const r=run,t=r.tasks[r.i];if(r.done)return;
@@ -354,10 +405,11 @@ function checkT(){
   }
   r.done=true;r.ist[r.i]=pts;
   const full=pts===soll(t);
+  {const tg=document.getElementById("ans");full?FX.ok(tg):pts?FX.part():FX.bad(tg)}
   document.getElementById("after").innerHTML=`<div class="fb ${full?"ok":"bad"}"><b>${fb}</b>${t.w}<div style="margin-top:6px;font-size:13px;opacity:.8">${pts} / ${soll(t)} Punkte</div></div>${nextBtn()}`;
   document.getElementById("after").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function rate(i,el){run.ist[run.i]=i;el.parentNode.querySelectorAll("button").forEach(b=>b.classList.toggle("sel",b===el));document.getElementById("nx").innerHTML=nextBtn()}
+function rate(i,el){run.ist[run.i]=i;{const t=run.tasks[run.i];i===t.p?FX.ok(el):i?FX.part():FX.bad(el)}el.parentNode.querySelectorAll("button").forEach(b=>b.classList.toggle("sel",b===el));document.getElementById("nx").innerHTML=nextBtn()}
 function nextBtn(){const last=run.i===run.tasks.length-1;return `<button class="btn p wide" style="--c:${run.f.c}" onclick="nextT()">${last?"Auswertung ansehen":"Weiter →"}</button>`}
 function nextT(){run.i++;if(run.i<run.tasks.length)showT();else resultFall()}
 function resultFall(){
@@ -370,6 +422,7 @@ function resultFall(){
   <p class="sub" style="margin-top:10px">Notengrenzen nur als Orientierung (übliche 100-Punkte-Skala der Kammern).</p>
   <div class="btns"><button class="btn" onclick="home()">Übersicht</button><button class="btn p" style="--c:${f.c}" onclick="startFall('${f.key}')">Nochmal</button></div>`;
   $.innerHTML=h;scrollTo(0,0);
+  FX.count(document.querySelector(".ring div"),pr,"%");if(p>=50)FX.confetti(p>=80?60:28);
 }
 home();
 </script>
